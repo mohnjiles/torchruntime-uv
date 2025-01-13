@@ -4,7 +4,9 @@ import sqlite3
 import re
 import sys
 
-from torchruntime.consts import NVIDIA, INTEL, AMD
+AMD = "1002"
+NVIDIA = "10de"
+INTEL = "8086"
 
 # Compile all regular expressions
 ARC_REGEX = re.compile(r"\barc(\b|\W)")
