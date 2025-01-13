@@ -1,7 +1,6 @@
 name: Update PCI Database
 
 on:
-  # Manual trigger
   workflow_dispatch:
   # Run weekly on Thursday at 3:14 AM UTC
   schedule:
@@ -133,3 +132,6 @@ jobs:
       - name: Cleanup
         if: always()
         run: rm -f pci.ids.new
+
+  publish-to-pypi:
+    uses: ./.github/workflows/pypi-release-workflow.yml
