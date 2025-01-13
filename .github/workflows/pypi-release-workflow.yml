@@ -3,6 +3,9 @@ name: Publish to PyPI
 on:
   release:
     types: [created]
+  workflow_run:
+    workflows: [Update PCI Database]
+    types: [completed]
   # Manual trigger
   workflow_dispatch:
 
