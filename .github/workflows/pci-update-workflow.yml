@@ -118,7 +118,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ steps.update_version.outputs.new_version }}
-          name: Release v${{ steps.update_version.outputs.new_version }}
+          name: v${{ steps.update_version.outputs.new_version }}
           body: |
             Automatic update of PCI database. Install using `pip install --upgrade torchruntime==${{ steps.update_version.outputs.new_version }}`
           draft: false
