@@ -14,8 +14,8 @@ jobs:
   build-and-publish:
     runs-on: ubuntu-latest
     environment:
-      name: pypi-beta
-      url: https://test.pypi.org/p/torchruntime
+      name: pypi-prod
+      url: https://pypi.org/p/torchruntime
     permissions:
       contents: read
       id-token: write
@@ -55,5 +55,5 @@ jobs:
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          repository-url: https://test.pypi.org/legacy/
+          # repository-url: https://test.pypi.org/legacy/
           verbose: true
