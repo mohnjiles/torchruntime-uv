@@ -3,7 +3,7 @@ requires = [ "setuptools",]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "torch-runtime"
+name = "torchruntime"
 version = "0.0.0"
 description = "Meant for app developers. A convenient way to install and configure the appropriate version of PyTorch on the user's computer, based on the OS and GPU manufacturer and model number."
 readme = "README.md"
@@ -16,8 +16,8 @@ name = "cmdr2"
 email = "secondary.cmdr2@gmail.com"
 
 [project.urls]
-Homepage = "https://github.com/easydiffusion/torch-runtime"
-"Bug Tracker" = "https://github.com/easydiffusion/torch-runtime/issues"
+Homepage = "https://github.com/easydiffusion/torchruntime"
+"Bug Tracker" = "https://github.com/easydiffusion/torchruntime/issues"
 
 [tool.isort]
 profile = "black"

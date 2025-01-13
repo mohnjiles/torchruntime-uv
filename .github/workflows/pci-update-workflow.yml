@@ -63,7 +63,7 @@ jobs:
       - name: Update files and generate database
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
-          python scripts/txt_to_db.py pci.ids.new torch_runtime/gpu_pci_ids.db
+          python scripts/txt_to_db.py pci.ids.new torchruntime/gpu_pci_ids.db
 
       - name: Run tests
         if: steps.check_changes.outputs.has_changes == 'true'
@@ -100,7 +100,7 @@ jobs:
 
           cat pyproject.toml
           cat pci.ids.sha256
-          ls -l torch_runtime/gpu_pci_ids.db
+          ls -l torchruntime/gpu_pci_ids.db
 
       - name: Configure Git
         if: steps.check_changes.outputs.has_changes == 'true'
@@ -111,7 +111,7 @@ jobs:
       # - name: Commit changes
       #   if: steps.check_changes.outputs.has_changes == 'true'
       #   run: |
-      #     git add pci.ids.sha256 torch_runtime/gpu_pci_ids.db pyproject.toml
+      #     git add pci.ids.sha256 torchruntime/gpu_pci_ids.db pyproject.toml
       #     git commit -m "Update PCI database, raw data file and version"
 
       # - name: Create Release
@@ -121,7 +121,7 @@ jobs:
       #     tag_name: v${{ steps.update_version.outputs.new_version }}
       #     name: Release ${{ steps.update_version.outputs.new_version }}
       #     body: |
-      #       Automatic update of PCI database. Install using `pip install --upgrade torch-runtime==${{ steps.update_version.outputs.new_version }}`
+      #       Automatic update of PCI database. Install using `pip install --upgrade torchruntime==${{ steps.update_version.outputs.new_version }}`
       #     draft: false
       #     prerelease: false
 

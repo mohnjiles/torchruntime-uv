@@ -1,7 +1,7 @@
-# torch-runtime
+# torchruntime
 [![Discord Server](https://img.shields.io/discord/1014774730907209781?label=Discord)](https://discord.com/invite/u9yhsFmEkB)
 
-**torch-runtime** is a lightweight package for automatically installing the appropriate variant of PyTorch on a user's computer, based on their OS, and GPU manufacturer and GPU model.
+**torchruntime** is a lightweight package for automatically installing the appropriate variant of PyTorch on a user's computer, based on their OS, and GPU manufacturer and GPU model.
 
 This package is used by [Easy Diffusion](https://github.com/easydiffusion/easydiffusion), but you're welcome to use it as well. It's useful for developers who make PyTorch-based apps that target users with NVIDIA, AMD and Intel graphics cards (as well as CPU-only usage), on Windows, Mac and Linux.
 
@@ -15,13 +15,13 @@ It deals with the complexity of the variety of torch builds and configurations r
 # Installation
 Supports Windows, Linux, and Mac.
 
-`pip install torch-runtime`
+`pip install torchruntime`
 
 ## Usage
 ### Step 1. Install the appropriate variant of PyTorch
 *This command should be run on the user's computer, or while creating platform-specific builds:*
 
-`python -m torch_runtime install` (*note the underscore in `torch_runtime`*)
+`python -m torchruntime install`
 
 This will install `torch`, `torchvision`, and `torchaudio`, and will decide the variant based on the user's OS, GPU manufacturer and GPU model number. See [customizing packages](#customizing-packages) for more options.
 
@@ -29,24 +29,24 @@ This will install `torch`, `torchvision`, and `torchaudio`, and will decide the 
 This should be run inside your program, to initialize the required environment variables (if any) for the variant of torch being used.
 
 ```py
-import torch_runtime
+import torchruntime
 
-torch_runtime.init_torch()
+torchruntime.init_torch()
 ```
 
 ## Customizing packages
-By default, `python -m torch_runtime install` will install the latest available `torch`, `torchvision` and `torchaudio` suitable on the user's platform.
+By default, `python -m torchruntime install` will install the latest available `torch`, `torchvision` and `torchaudio` suitable on the user's platform.
 
 You can customize the packages to install by including their names:
-* For e.g. to install only `torch` and `torchvision`, you can run `python -m torch_runtime install torch torchvision`
-* To install specific versions (in pip format), you can run `python -m torch_runtime install "torch>2.0" "torchvision==0.20"`
+* For e.g. to install only `torch` and `torchvision`, you can run `python -m torchruntime install torch torchvision`
+* To install specific versions (in pip format), you can run `python -m torchruntime install "torch>2.0" "torchvision==0.20"`
 
 **Note:** If you specify package versions, please keep in mind that the version may not be available to *all* the users on *all* the torch platforms. For e.g. a user with Python 3.8 would not be able to install torch 2.5 (or higher), because torch 2.5 dropped support for Python 3.8.
 
-So in general, it's better to avoid specifying a version unless it really matters to you (or you know what you're doing). Instead, please allow `torch-runtime` to pick the latest-possible version for the user.
+So in general, it's better to avoid specifying a version unless it really matters to you (or you know what you're doing). Instead, please allow `torchruntime` to pick the latest-possible version for the user.
 
 # Compatibility table
-The list of platforms on which `torch-runtime` can install a working variant of PyTorch.
+The list of platforms on which `torchruntime` can install a working variant of PyTorch.
 
 **Note:** *This list is based on user feedback (since I don't have all the cards). Please let me know if your card is supported (or not) by opening a pull request or issue or messaging on [Discord](https://discord.com/invite/u9yhsFmEkB) (with supporting logs).*
 
@@ -102,7 +102,7 @@ Different models of AMD cards require different LLVM targets, and sometimes diff
 
 And plenty of AMD cards work with ROCm (even when they aren't in the official list of supported cards). Information about these cards (for e.g. the LLVM target to use) is pretty scattered.
 
-`torch-runtime` deals with this complexity for your convenience.
+`torchruntime` deals with this complexity for your convenience.
 
 # Contributing
 📢 I'm looking for contributions in these specific areas:

@@ -1,4 +1,4 @@
-from torch_runtime.device_db import parse_windows_output, parse_linux_output, parse_macos_output
+from torchruntime.device_db import parse_windows_output, parse_linux_output, parse_macos_output
 
 
 def test_parse_windows_output():

@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi-beta
-      url: https://test.pypi.org/p/torch-runtime
+      url: https://test.pypi.org/p/torchruntime
     permissions:
       contents: read
       id-token: write
@@ -31,7 +31,7 @@ jobs:
 
       - name: Copy tests
         run: |
-          cp -R tests torch_runtime/
+          cp -R tests torchruntime/
 
       - name: Build package
         run: python -m build
@@ -43,8 +43,9 @@ jobs:
           cd /tmp/install-test
           pip install *.whl
 
-          python -m torch_runtime --help  # test invocation
-          pytest --pyargs torch-runtime  # run tests
+          pip show torchruntime
+          python -m torchruntime --help  # test invocation
+          pytest --pyargs torchruntime  # run tests
 
       # - name: Publish to PyPI
       #   uses: pypa/gh-action-pypi-publish@release/v1

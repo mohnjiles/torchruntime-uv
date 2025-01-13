@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch
-from torch_runtime.installer import get_install_commands, get_pip_commands, run_commands
+from torchruntime.installer import get_install_commands, get_pip_commands, run_commands
 
 
 def test_empty_args():
@@ -30,7 +30,7 @@ def test_rocm_platform():
 
 
 def test_xpu_platform_windows_with_torch_only(monkeypatch):
-    monkeypatch.setattr("torch_runtime.installer.os_name", "Windows")
+    monkeypatch.setattr("torchruntime.installer.os_name", "Windows")
     packages = ["torch"]
     result = get_install_commands("xpu", packages)
     expected_url = "https://download.pytorch.org/whl/test/xpu"
@@ -38,7 +38,7 @@ def test_xpu_platform_windows_with_torch_only(monkeypatch):
 
 
 def test_xpu_platform_windows_with_torchvision(monkeypatch, capsys):
-    monkeypatch.setattr("torch_runtime.installer.os_name", "Windows")
+    monkeypatch.setattr("torchruntime.installer.os_name", "Windows")
     packages = ["torch", "torchvision"]
     result = get_install_commands("xpu", packages)
     expected_url = "https://download.pytorch.org/whl/nightly/xpu"
@@ -48,7 +48,7 @@ def test_xpu_platform_windows_with_torchvision(monkeypatch, capsys):
 
 
 def test_xpu_platform_linux(monkeypatch):
-    monkeypatch.setattr("torch_runtime.installer.os_name", "Linux")
+    monkeypatch.setattr("torchruntime.installer.os_name", "Linux")
     packages = ["torch", "torchvision"]
     result = get_install_commands("xpu", packages)
     expected_url = "https://download.pytorch.org/whl/test/xpu"

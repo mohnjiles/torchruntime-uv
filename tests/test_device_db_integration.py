@@ -1,12 +1,12 @@
 # Integration test, which connects to the database and checks for some common devices
 
-from torch_runtime.device_db import get_device_infos, DEVICE_DB_FILE
+from torchruntime.device_db import get_device_infos, DEVICE_DB_FILE
 
 
 def test_db_file_exists():
     import os
 
-    db_path = os.path.join("torch_runtime", DEVICE_DB_FILE)
+    db_path = os.path.join("torchruntime", DEVICE_DB_FILE)
     assert os.path.exists(db_path)
 
 
