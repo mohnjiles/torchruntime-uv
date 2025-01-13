@@ -1,0 +1,52 @@
+name: Publish to PyPI
+
+on:
+  release:
+    types: [created]
+  # Manual trigger
+  workflow_dispatch:
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi-beta
+      url: https://test.pypi.org/p/torch-runtime
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+          cache: "pip"
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build wheel pytest
+
+      - name: Copy tests
+        run: |
+          cp -R tests torch_runtime/
+
+      - name: Build package
+        run: python -m build
+
+      - name: Install and test the package
+        run: |
+          mkdir /tmp/install-test
+          cp dist/*.whl /tmp/install-test
+          cd /tmp/install-test
+          pip install *.whl
+
+          python -m torch_runtime --help  # test invocation
+          pytest --pyargs torch-runtime  # run tests
+
+      # - name: Publish to PyPI
+      #   uses: pypa/gh-action-pypi-publish@release/v1
+      #   with:
+      #     repository-url: https://test.pypi.org/legacy/
