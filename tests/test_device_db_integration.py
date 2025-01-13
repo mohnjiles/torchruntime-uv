@@ -5,8 +5,9 @@ from torchruntime.device_db import get_device_infos, DEVICE_DB_FILE
 
 def test_db_file_exists():
     import os
+    from torchruntime import device_db
 
-    db_path = os.path.join("torchruntime", DEVICE_DB_FILE)
+    db_path = os.path.join(os.path.dirname(device_db.__file__), DEVICE_DB_FILE)
     assert os.path.exists(db_path)
 
 
