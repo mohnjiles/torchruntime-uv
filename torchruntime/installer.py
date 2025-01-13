@@ -1,4 +1,5 @@
 import re
+import sys
 import platform
 import subprocess
 
@@ -8,7 +9,7 @@ from .platform_detection import get_torch_platform
 
 os_name = platform.system()
 
-PIP_PREFIX = ["python", "-m", "pip", "install"]
+PIP_PREFIX = [sys.executable, "-m", "pip", "install"]
 CUDA_REGEX = re.compile(r"^cu[\d+]")
 
 

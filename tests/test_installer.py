@@ -1,3 +1,4 @@
+import sys
 import pytest
 from unittest.mock import patch
 from torchruntime.installer import get_install_commands, get_pip_commands, run_commands
@@ -76,8 +77,8 @@ def test_unsupported_platform():
 def test_get_pip_commands_valid():
     cmds = [["package1"], ["package2", "--upgrade"]]
     expected = [
-        ["python", "-m", "pip", "install", "package1"],
-        ["python", "-m", "pip", "install", "package2", "--upgrade"],
+        [sys.executable, "-m", "pip", "install", "package1"],
+        [sys.executable, "-m", "pip", "install", "package2", "--upgrade"],
     ]
 
     result = get_pip_commands(cmds)
@@ -92,7 +93,10 @@ def test_get_pip_commands_none_input():
 
 # Test suite for run_commands
 def test_run_commands():
-    cmds = [["python", "-m", "pip", "install", "package1"], ["python", "-m", "pip", "install", "package2", "--upgrade"]]
+    cmds = [
+        [sys.executable, "-m", "pip", "install", "package1"],
+        [sys.executable, "-m", "pip", "install", "package2", "--upgrade"],
+    ]
 
     with patch("subprocess.run") as mock_run:
         run_commands(cmds)
