@@ -84,7 +84,7 @@ jobs:
           # Get current version and increment minor version
           current_version = config['project']['version']
           major, minor, patch = current_version.split('.')
-          new_version = f"{major}.{int(minor) + 1}.{patch}"
+          new_version = f"{major}.{int(minor) + 1}.0"
           
           # Update version in config
           config['project']['version'] = new_version
