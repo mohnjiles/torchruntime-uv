@@ -117,6 +117,7 @@ Please message on the [Discord community](https://discord.com/invite/u9yhsFmEkB)
 # Credits
 * Code contributors on [Easy Diffusion](https://github.com/easydiffusion/easydiffusion).
 * Users on [Easy Diffusion's Discord](https://discord.com/invite/u9yhsFmEkB) who've helped with testing on various GPUs.
+* [PCI Database](https://github.com/pciutils/pciids/) automatically generated from the PCI ID Database at http://pci-ids.ucw.cz
 
 # More resources
 * [AMD GPU LLVM Architectures](https://web.archive.org/web/20241228163540/https://llvm.org/docs/AMDGPUUsage.html#processors)
