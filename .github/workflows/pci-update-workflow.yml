@@ -136,6 +136,3 @@ jobs:
       - name: Wait
         if: always()
         run: sleep 5  # seconds
-
-  publish-to-pypi:
-    uses: ./.github/workflows/pypi-release-workflow.yml

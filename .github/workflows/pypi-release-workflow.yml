@@ -3,7 +3,10 @@ name: Publish to PyPI
 on:
   release:
     types: [created]
-  workflow_call:
+  workflow_run:
+    workflows: ["Update PCI Database"]
+    types:
+      - completed
   workflow_dispatch:
 
 jobs:
