@@ -4,7 +4,8 @@ on:
   release:
     types: [created]
   workflow_run:
-    workflows: ["Update PCI Database"]
+    workflows:
+      - Update PCI Database
     types:
       - completed
   workflow_dispatch:
