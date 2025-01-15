@@ -74,6 +74,7 @@ The list of platforms on which `torchruntime` can install a working variant of P
 |---|---|---|---|
 | 7xxx  | ✅ Yes  | Win/Linux    | Navi3/RDNA3 (gfx110x). ROCm 6.2 on Linux. DirectML on Windows  |
 | 6xxx  | ✅ Yes  | Win/Linux    | Navi2/RDNA2 (gfx103x). ROCm 6.2 on Linux. DirectML on Windows  |
+| 6xxx on Intel Mac  | ✅ Yes  | Intel Mac  | gfx103x. |
 | 5xxx  | ✅ Yes  | Win/Linux    | Navi1/RDNA1 (gfx101x). Full-precision required. DirectML on Windows. Linux only supports upto ROCm 5.2. Waiting for [this](https://github.com/pytorch/pytorch/issues/132570#issuecomment-2313071756) for ROCm 6.2 support.  |
 | 5xxx on Intel Mac  | ❓ Untested (WIP)  | Intel Mac  | gfx101x. Implemented but need testers, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
 | 4xxxG/Radeon VII  | ✅ Yes  | Win/Linux  | Vega 20 gfx906. Need testers for Windows, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
@@ -85,7 +86,8 @@ The list of platforms on which `torchruntime` can install a working variant of P
 | Series  | Supported? |Notes  |
 |---|---|---|
 | M1/M2/M3/M4  | ✅ Yes  | 'mps' backend  |
-| AMD on Intel Mac  | ❓ Untested (WIP)  | Implemented but need testers, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
+| AMD 6xxx on Intel Mac  | ✅ Yes  | Intel Mac  | gfx103x. |
+| AMD 5xxx on Intel Mac  | ❓ Untested (WIP)  | Intel Mac  | gfx101x. Implemented but need testers, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
 
 **Intel:**
 
