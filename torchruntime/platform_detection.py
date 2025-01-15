@@ -70,6 +70,10 @@ def get_torch_platform(discrete_gpu_infos):
                 return "rocm6.2"
             elif any(device_name.startswith("Navi 1") for device_name in device_names):
                 return "rocm5.2"
+            elif any(
+                device_name.startswith("Vega 1") or device_name.startswith("Vega 2") for device_name in device_names
+            ):
+                return "rocm5.7"
             elif any(device_name.startswith("Ellesmere") for device_name in device_names):
                 return "rocm4.2"
 

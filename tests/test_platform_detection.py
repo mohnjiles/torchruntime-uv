@@ -56,6 +56,20 @@ def test_amd_gpu_navi1_linux(monkeypatch):
     assert get_torch_platform(discrete_gpu_infos) == "rocm5.2"
 
 
+def test_amd_gpu_vega1_linux(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
+    discrete_gpu_infos = [(AMD, "AMD", 0x1234, "Vega 10")]
+    assert get_torch_platform(discrete_gpu_infos) == "rocm5.7"
+
+
+def test_amd_gpu_vega2_linux(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
+    discrete_gpu_infos = [(AMD, "AMD", 0x1234, "Vega 20")]
+    assert get_torch_platform(discrete_gpu_infos) == "rocm5.7"
+
+
 def test_amd_gpu_ellesmere_linux(monkeypatch):
     monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
     monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")

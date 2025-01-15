@@ -52,6 +52,13 @@ def set_rocm_env_vars(discrete_gpu_infos, torch_platform):
         # env["HSA_ENABLE_SDMA"] = "0"  # uncomment this if facing errors like in https://github.com/ROCm/ROCm/issues/2616
         env["FORCE_FULL_PRECISION"] = "yes"  # https://github.com/ROCm/ROCm/issues/2527
         # FORCE_FULL_PRECISION won't be necessary once this is fixed (and torch2 wheels are released for ROCm 6.2): https://github.com/pytorch/pytorch/issues/132570#issuecomment-2313071756
+    elif any(device_name.startswith("Vega 2") for device_name in device_names):  # Radeon VII etc
+        print("[INFO] Applying Vega 20 settings")
+        env["HSA_OVERRIDE_GFX_VERSION"] = "9.0.6"
+    elif any(device_name.startswith("Vega 1") for device_name in device_names):  # Radeon RX Vega 56 etc
+        print("[INFO] Applying Vega 10 settings")
+        env["HSA_OVERRIDE_GFX_VERSION"] = "9.0.0"
+        env["FORCE_FULL_PRECISION"] = "yes"
     elif any(device_name.startswith("Ellesmere") for device_name in device_names):  # RX 570, 580, 590, Polaris etc
         print("[INFO] Applying Ellesmere settings")
         env["HSA_OVERRIDE_GFX_VERSION"] = "8.0.3"  # https://github.com/ROCm/ROCm/issues/1659
