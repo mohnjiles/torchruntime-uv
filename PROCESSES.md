@@ -1,6 +1,6 @@
 # Processes
 ## PCI Database Updates
-A [GitHub Actions workflow](.github/workflows/pci-update-workflow.yml) runs automatically every Thursday at 3.14am UTC to fetch the latest database for PCI IDs.
+A [GitHub Actions workflow](.github/workflows/pci-update-workflow.yml) runs automatically every Thursday at 3.14am UTC to fetch the latest database for PCI IDs from [here](https://raw.githubusercontent.com/pciutils/pciids/refs/heads/master/pci.ids).
 
 If it finds a new database (by comparing the sha256 against the stored [sha256 sum](pci.ids.sha256)), it will create an SQLite database of graphics cards using [txt_to_db.py](scripts/txt_to_db.py). It will then update the stored .sha256 sum, increment the minor version in [pyproject.toml](pyproject.toml), and create a new GitHub release.
 
