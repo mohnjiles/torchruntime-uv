@@ -90,7 +90,7 @@ def test_amd_gpu_mac(monkeypatch):
     monkeypatch.setattr("torchruntime.platform_detection.os_name", "Darwin")
     monkeypatch.setattr("torchruntime.platform_detection.arch", "arm64")
     discrete_gpu_infos = [(AMD, "AMD", 0x1234, "Radeon")]
-    assert get_torch_platform(discrete_gpu_infos) == "rocm4.2"
+    assert get_torch_platform(discrete_gpu_infos) == "mps"
 
 
 def test_nvidia_gpu_windows(monkeypatch):

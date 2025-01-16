@@ -82,7 +82,7 @@ def get_torch_platform(discrete_gpu_infos):
             )
             return "cpu"
         elif os_name == "Darwin":
-            return "rocm4.2"
+            return "mps"
     elif vendor_id == NVIDIA:
         if os_name in ("Windows", "Linux"):
             return "cu124"
