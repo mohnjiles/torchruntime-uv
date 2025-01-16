@@ -13,6 +13,22 @@ ARC_REGEX = re.compile(r"\barc(\b|\W)")
 SKIP_LINE_REGEX = re.compile(r"^\t{2,}")
 VENDOR_REGEX = re.compile(r"^([0-9a-fA-F]{4})\s+(.*)")
 DEVICE_REGEX = re.compile(r"^\t([0-9a-fA-F]{4})\s+(.*)")
+GPU_NAME_REGEXES = {
+    AMD: {
+        "include": re.compile(r"\b(?:radeon|instinct|fire|rage|polaris)\b", re.IGNORECASE),
+        "exclude": re.compile(r"\b(?:audio|bridge)\b", re.IGNORECASE),
+    },
+    INTEL: {
+        "include": re.compile(r"\b(?:arc)\b", re.IGNORECASE),
+        "exclude": re.compile(r"\b(?:audio|bridge)\b", re.IGNORECASE),
+    },
+    NVIDIA: {
+        "include": re.compile(r"\b(?:geforce|riva|quadro|tesla|ion|grid|rtx)\b", re.IGNORECASE),
+        "exclude": re.compile(
+            r"\b(?:audio|switch|pci|memory|smbus|ide|co-processor|bridge|usb|sata|controller)\b", re.IGNORECASE
+        ),
+    },
+}
 
 
 def process_pci_file(input_file: str, output_db: str):
@@ -54,7 +70,10 @@ def process_pci_file(input_file: str, output_db: str):
             if match_device and vendor_id and vendor_name:
                 device_id, device_name = match_device.groups()
 
-                if vendor_id == INTEL and not ARC_REGEX.search(device_name.lower()):
+                include_regex = GPU_NAME_REGEXES[vendor_id]["include"]
+                exclude_regex = GPU_NAME_REGEXES[vendor_id]["exclude"]
+
+                if not include_regex.search(device_name) or exclude_regex.search(device_name):
                     continue
 
                 # Insert the vendor and device information into the database
