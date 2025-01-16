@@ -58,7 +58,6 @@ def set_rocm_env_vars(discrete_gpu_infos, torch_platform):
     elif any(device_name.startswith("Vega 1") for device_name in device_names):  # Radeon RX Vega 56 etc
         print("[INFO] Applying Vega 10 settings")
         env["HSA_OVERRIDE_GFX_VERSION"] = "9.0.0"
-        env["FORCE_FULL_PRECISION"] = "yes"
     elif any(device_name.startswith("Ellesmere") for device_name in device_names):  # RX 570, 580, 590, Polaris etc
         print("[INFO] Applying Ellesmere settings")
         env["HSA_OVERRIDE_GFX_VERSION"] = "8.0.3"  # https://github.com/ROCm/ROCm/issues/1659

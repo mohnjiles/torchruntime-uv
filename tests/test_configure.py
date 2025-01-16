@@ -78,11 +78,11 @@ def test_vega_2_settings():
 
 def test_vega_1_settings():
     gpus = [create_gpu_info("123", "Vega 10")]
-    set_rocm_env_vars(gpus, "rocm6.2")
+    set_rocm_env_vars(gpus, "rocm5.2")
 
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "9.0.0"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "0"
-    assert os.environ.get("FORCE_FULL_PRECISION") == "yes"
+    assert "FORCE_FULL_PRECISION" not in os.environ
     assert "ROC_ENABLE_PRE_VEGA" not in os.environ
 
 
