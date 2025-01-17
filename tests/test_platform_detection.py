@@ -150,6 +150,68 @@ def test_multiple_gpu_vendors(monkeypatch):
         get_torch_platform(discrete_gpu_infos)
 
 
+def test_multiple_gpu_NVIDIA(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
+    discrete_gpu_infos = [
+        (NVIDIA, "NVIDIA", "2504", "GA106 [GeForce RTX 3060 Lite Hash Rate]"),
+        (NVIDIA, "NVIDIA", "1c02", "GP106 [GeForce GTX 1060 3GB]"),
+    ]
+    assert get_torch_platform(discrete_gpu_infos) == "cu124"
+
+
+def test_multiple_gpu_AMD_Navi3_Navi2(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
+    discrete_gpu_infos = [
+        (AMD, "AMD", "73f0", "Navi 33 [Radeon RX 7600M XT]"),
+        (AMD, "AMD", "73bf", "Navi 21 [Radeon RX 6800/6800 XT / 6900 XT]"),
+    ]
+    assert get_torch_platform(discrete_gpu_infos) == "rocm6.2"
+
+
+def test_multiple_gpu_AMD_Navi3_Vega2(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
+    discrete_gpu_infos = [
+        (AMD, "AMD", "73f0", "Navi 33 [Radeon RX 7600M XT]"),
+        (AMD, "AMD", "66af", "Vega 20 [Radeon VII]"),
+    ]
+    assert get_torch_platform(discrete_gpu_infos) == "rocm5.7"
+
+
+def test_multiple_gpu_AMD_Vega2_Navi2(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
+    discrete_gpu_infos = [
+        (AMD, "AMD", "66af", "Vega 20 [Radeon VII]"),
+        (AMD, "AMD", "73bf", "Navi 21 [Radeon RX 6800/6800 XT / 6900 XT]"),
+    ]
+    assert get_torch_platform(discrete_gpu_infos) == "rocm5.7"
+
+
+def test_multiple_gpu_AMD_Vega1_Navi2__incompatible_rocm_version(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
+    discrete_gpu_infos = [
+        (AMD, "AMD", "6867", "Vega 10 XL [Radeon Pro Vega 56]"),
+        (AMD, "AMD", "73bf", "Navi 21 [Radeon RX 6800/6800 XT / 6900 XT]"),
+    ]
+    assert get_torch_platform(discrete_gpu_infos) == "rocm6.2"
+    print("For lack of a better solution at the moment")
+
+
+def test_multiple_gpu_AMD_Ellesmere_Navi3__incompatible_rocm_version(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
+    discrete_gpu_infos = [
+        (AMD, "AMD", "67df", "Ellesmere [Radeon RX 470/480/570/570X/580/580X/590]"),
+        (AMD, "AMD", "73f0", "Navi 33 [Radeon RX 7600M XT]"),
+    ]
+    assert get_torch_platform(discrete_gpu_infos) == "rocm6.2"
+    print("For lack of a better solution at the moment")
+
+
 def test_unsupported_architecture(monkeypatch):
     monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
     monkeypatch.setattr("torchruntime.platform_detection.arch", "sparc")

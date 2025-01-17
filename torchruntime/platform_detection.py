@@ -59,6 +59,10 @@ def get_torch_platform(discrete_gpu_infos):
             return "directml"
         elif os_name == "Linux":
             device_names = set(device_name for *_, device_name in discrete_gpu_infos)
+            if any(device_name.startswith("Navi") for device_name in device_names) and any(
+                device_name.startswith("Vega 2") for device_name in device_names
+            ):  # lowest-common denominator is rocm5.7, which works with both Navi and Vega 20
+                return "rocm5.7"
             if any(
                 device_name.startswith("Navi 3") or device_name.startswith("Navi 2") for device_name in device_names
             ):
@@ -68,13 +72,13 @@ def get_torch_platform(discrete_gpu_infos):
                     )
                     return "rocm6.1"
                 return "rocm6.2"
-            elif any(device_name.startswith("Navi 1") for device_name in device_names):
-                return "rocm5.2"
-            elif any(device_name.startswith("Vega 2") for device_name in device_names):
+            if any(device_name.startswith("Vega 2") for device_name in device_names):
                 return "rocm5.7"
-            elif any(device_name.startswith("Vega 1") for device_name in device_names):
+            if any(device_name.startswith("Navi 1") for device_name in device_names):
                 return "rocm5.2"
-            elif any(device_name.startswith("Ellesmere") for device_name in device_names):
+            if any(device_name.startswith("Vega 1") for device_name in device_names):
+                return "rocm5.2"
+            if any(device_name.startswith("Ellesmere") for device_name in device_names):
                 return "rocm4.2"
 
             print(

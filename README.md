@@ -114,6 +114,7 @@ And plenty of AMD cards work with ROCm (even when they aren't in the official li
 - Intel GPUs.
 - Testing on professional AMD GPUs (e.g. the Instinct series).
 - An easy-to-run benchmark script (that people can run to check the level of compatibility on their platform).
+- Improve [the logic](tests/test_configure.py) for supporting multiple AMD GPUs with different ROCm compatibility. At present, it just picks the latest GPU, which means it doesn't support running workloads on multiple AMD GPUs in parallel.
 
 Please message on the [Discord community](https://discord.com/invite/u9yhsFmEkB) if you have AMD or Intel GPUs, and would like to help with testing or adding support for them! Thanks!
 
