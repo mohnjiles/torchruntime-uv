@@ -160,14 +160,18 @@ def test_multiple_gpu_NVIDIA(monkeypatch):
     assert get_torch_platform(discrete_gpu_infos) == "cu124"
 
 
-def test_multiple_gpu_AMD_Navi3_Navi2(monkeypatch):
+def test_multiple_gpu_AMD_Navi3_Navi2(monkeypatch, capsys):
     monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
     monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
     discrete_gpu_infos = [
         (AMD, "AMD", "73f0", "Navi 33 [Radeon RX 7600M XT]"),
         (AMD, "AMD", "73bf", "Navi 21 [Radeon RX 6800/6800 XT / 6900 XT]"),
     ]
-    assert get_torch_platform(discrete_gpu_infos) == "rocm6.2"
+    expected = "rocm6.1" if py_version < (3, 9) else "rocm6.2"
+    assert get_torch_platform(discrete_gpu_infos) == expected
+    if py_version < (3, 9):
+        captured = capsys.readouterr()
+        assert "Support for Python 3.8 was dropped in ROCm 6.2" in captured.out
 
 
 def test_multiple_gpu_AMD_Navi3_Vega2(monkeypatch):
@@ -190,25 +194,33 @@ def test_multiple_gpu_AMD_Vega2_Navi2(monkeypatch):
     assert get_torch_platform(discrete_gpu_infos) == "rocm5.7"
 
 
-def test_multiple_gpu_AMD_Vega1_Navi2__incompatible_rocm_version(monkeypatch):
+def test_multiple_gpu_AMD_Vega1_Navi2__incompatible_rocm_version(monkeypatch, capsys):
     monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
     monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
     discrete_gpu_infos = [
         (AMD, "AMD", "6867", "Vega 10 XL [Radeon Pro Vega 56]"),
         (AMD, "AMD", "73bf", "Navi 21 [Radeon RX 6800/6800 XT / 6900 XT]"),
     ]
-    assert get_torch_platform(discrete_gpu_infos) == "rocm6.2"
+    expected = "rocm6.1" if py_version < (3, 9) else "rocm6.2"
+    assert get_torch_platform(discrete_gpu_infos) == expected
+    if py_version < (3, 9):
+        captured = capsys.readouterr()
+        assert "Support for Python 3.8 was dropped in ROCm 6.2" in captured.out
     print("For lack of a better solution at the moment")
 
 
-def test_multiple_gpu_AMD_Ellesmere_Navi3__incompatible_rocm_version(monkeypatch):
+def test_multiple_gpu_AMD_Ellesmere_Navi3__incompatible_rocm_version(monkeypatch, capsys):
     monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
     monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
     discrete_gpu_infos = [
         (AMD, "AMD", "67df", "Ellesmere [Radeon RX 470/480/570/570X/580/580X/590]"),
         (AMD, "AMD", "73f0", "Navi 33 [Radeon RX 7600M XT]"),
     ]
-    assert get_torch_platform(discrete_gpu_infos) == "rocm6.2"
+    expected = "rocm6.1" if py_version < (3, 9) else "rocm6.2"
+    assert get_torch_platform(discrete_gpu_infos) == expected
+    if py_version < (3, 9):
+        captured = capsys.readouterr()
+        assert "Support for Python 3.8 was dropped in ROCm 6.2" in captured.out
     print("For lack of a better solution at the moment")
 
 
