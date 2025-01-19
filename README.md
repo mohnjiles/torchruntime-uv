@@ -41,6 +41,8 @@ You can customize the packages to install by including their names:
 * For e.g. to install only `torch` and `torchvision`, you can run `python -m torchruntime install torch torchvision`
 * To install specific versions (in pip format), you can run `python -m torchruntime install "torch>2.0" "torchvision==0.20"`
 
+Supported torch packages: `torch`, `torchvision`, `torchaudio`, `torchao`.
+
 **Note:** If you specify package versions, please keep in mind that the version may not be available to *all* the users on *all* the torch platforms. For e.g. a user with Python 3.8 would not be able to install torch 2.5 (or higher), because torch 2.5 dropped support for Python 3.8.
 
 So in general, it's better to avoid specifying a version unless it really matters to you (or you know what you're doing). Instead, please allow `torchruntime` to pick the latest-possible version for the user.
@@ -95,6 +97,9 @@ The list of platforms on which `torchruntime` can install a working variant of P
 |---|---|---|---|
 | Arc  | ❓ Untested (WIP)  | Win/Linux  | Implemented but need testers, please message on [Discord](https://discord.com/invite/u9yhsFmEkB). Backends: 'xpu' or DirectML or [ipex](https://github.com/intel/intel-extension-for-pytorch) |
 
+
+# API
+See [API](API.md) for a complete list of module functions.
 
 # FAQ
 ## Why can't I just run 'pip install torch'?
