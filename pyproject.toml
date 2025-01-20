@@ -16,7 +16,7 @@ name = "cmdr2"
 email = "secondary.cmdr2@gmail.com"
 
 [project.scripts]
-torchruntime = "torchruntime:main"
+torchruntime = "torchruntime.__main__:main"
 
 [project.urls]
 Homepage = "https://github.com/easydiffusion/torchruntime"
