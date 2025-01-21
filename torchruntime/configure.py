@@ -69,6 +69,7 @@ def set_rocm_env_vars(discrete_gpu_infos, torch_platform):
         env["HSA_OVERRIDE_GFX_VERSION"] = "9.0.6"
         env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(discrete_gpu_infos, "Vega 2")
     elif has_vega1:
+        # # https://discord.com/channels/1014774730907209781/1329021732794667068/1329261488300363776
         env["HSA_OVERRIDE_GFX_VERSION"] = "9.0.0"
         env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(discrete_gpu_infos, "Vega 1")
     elif has_ellesmere:
