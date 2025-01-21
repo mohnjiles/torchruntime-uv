@@ -23,7 +23,7 @@ GPU_NAME_REGEXES = {
         "exclude": re.compile(r"\b(?:audio|bridge)\b", re.IGNORECASE),
     },
     NVIDIA: {
-        "include": re.compile(r"\b(?:geforce|riva|quadro|tesla|ion|grid|rtx)\b", re.IGNORECASE),
+        "include": re.compile(r"\b(?:geforce|riva|quadro|tesla|ion|grid|rtx|tu\d{2,}.+t\d{2,})\b", re.IGNORECASE),
         "exclude": re.compile(
             r"\b(?:audio|switch|pci|memory|smbus|ide|co-processor|bridge|usb|sata|controller)\b", re.IGNORECASE
         ),
