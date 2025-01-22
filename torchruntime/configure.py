@@ -1,18 +1,27 @@
 import os
+import re
 
 from .device_db import get_discrete_gpus
 from .platform_detection import get_torch_platform, os_name
+
+NVIDIA_FULL_PRECISION_DEVICES = re.compile(r"\b(?:1630|1650|1660|tesla k40m|tu\d{2,}.+t\d{2,})\b", re.IGNORECASE)
 
 
 def init_torch():
     discrete_gpu_infos = get_discrete_gpus()
     torch_platform = get_torch_platform(discrete_gpu_infos)
 
+    _init_torch_internal(discrete_gpu_infos, torch_platform)
+
+
+def _init_torch_internal(discrete_gpu_infos, torch_platform):
     if torch_platform.startswith("rocm"):
         check_rocm_permissions()
         set_rocm_env_vars(discrete_gpu_infos, torch_platform)
+    elif torch_platform.startswith("cu"):
+        set_cuda_env_vars(discrete_gpu_infos, torch_platform)
     elif os_name == "Darwin":
-        _set_env_vars({"PYTORCH_ENABLE_MPS_FALLBACK": "1"})
+        set_mac_env_vars(discrete_gpu_infos, torch_platform)
 
 
 def check_rocm_permissions():
@@ -82,6 +91,23 @@ def set_rocm_env_vars(discrete_gpu_infos, torch_platform):
         return
 
     _set_env_vars(env)
+
+
+def set_cuda_env_vars(discrete_gpu_infos, torch_platform):
+    if not discrete_gpu_infos:
+        return
+
+    device_names = [device_name for *_, device_name in discrete_gpu_infos]
+    env = {}
+
+    if any(NVIDIA_FULL_PRECISION_DEVICES.search(device_name) for device_name in device_names):
+        env["FORCE_FULL_PRECISION"] = "yes"
+
+    _set_env_vars(env)
+
+
+def set_mac_env_vars(discrete_gpu_infos, torch_platform):
+    _set_env_vars({"PYTORCH_ENABLE_MPS_FALLBACK": "1"})
 
 
 def _visible_device_ids(discrete_gpu_info, family_name):
