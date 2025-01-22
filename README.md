@@ -79,9 +79,9 @@ The list of platforms on which `torchruntime` can install a working variant of P
 | 6xxx on Intel Mac  | ✅ Yes  | Intel Mac  | gfx103x. 'mps' backend |
 | 5xxx  | ✅ Yes  | Win/Linux    | Navi1/RDNA1 (gfx101x). Full-precision required. DirectML on Windows. Linux only supports upto ROCm 5.2. Waiting for [this](https://github.com/pytorch/pytorch/issues/132570#issuecomment-2313071756) for ROCm 6.2 support.  |
 | 5xxx on Intel Mac  | ❓ Untested (WIP)  | Intel Mac  | gfx101x. Implemented but need testers, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
-| 4xxxG/Radeon VII  | ✅ Yes  | Win/Linux  | Vega 20 gfx906. Need testers for Windows, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
-| 2xxxG/Radeon RX Vega 56  | ⚠️ Partial  | Win/Linux  | Vega 10 gfx900. ROCm 5.2 on Linux. Implemented but need testers for Windows, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
-| 5xx/Polaris  | ❓ Untested (WIP)  | N/A  | gfx80x. Implemented but need testers, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
+| 4xxxG/Radeon VII  | ✅ Yes  | Win/[Linux](https://discord.com/channels/1014774730907209781/1329021732794667068/1329048324405465108)  | Vega 20 gfx906. Need testers for Windows, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
+| 2xxxG/Radeon RX Vega 56  | ✅ Yes  | [Win](https://discord.com/channels/1014774730907209781/1329021732794667068/1331203312137273375)/[Linux](https://discord.com/channels/1014774730907209781/1329021732794667068/1329261488300363776)  | Vega 10 gfx900. ROCm 5.2 on Linux. DirectML on Windows |
+| 4xx/5xx/Polaris  | ⚠️ Partial  | Win  | gfx80x. Works partially with DirectML on Windows ([notes](https://discord.com/channels/1014774730907209781/1329021732794667068/1331199652451713044)). Did not work with ROCm5.7 with custom-compiled PyTorch 1.13 on Linux ([notes](https://discord.com/channels/1014774730907209781/1329021732794667068/1331486882479210602)). |
 
 **Apple:**
 
