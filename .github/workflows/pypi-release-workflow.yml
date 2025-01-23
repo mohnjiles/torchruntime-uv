@@ -29,19 +29,42 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install build dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install build wheel pytest
+          pip install build wheel pytest toml requests
+
+      - name: Check PyPI version
+        id: check-version
+        run: |
+          # Read version from pyproject.toml
+          TOML_VERSION=$(python -c "import toml; print(toml.load('pyproject.toml')['project']['version'])")
+
+          # Get latest PyPI version using PyPI JSON API
+          PYPI_VERSION=$(python -c "import requests; print(requests.get('https://pypi.org/pypi/torchruntime/json').json()['info']['version'])")
+
+          echo "Local version: $TOML_VERSION"
+          echo "PyPI version: $PYPI_VERSION"
+
+          if [ "$TOML_VERSION" = "$PYPI_VERSION" ]; then
+            echo "Versions match. Skipping publish."
+            echo "publish=false" >> $GITHUB_OUTPUT
+          else
+            echo "Versions differ. Proceeding with publish."
+            echo "publish=true" >> $GITHUB_OUTPUT
+          fi
 
       - name: Copy tests
+        if: steps.check-version.outputs.publish == 'true'
         run: |
           cp -R tests torchruntime/
 
       - name: Build package
+        if: steps.check-version.outputs.publish == 'true'
         run: python -m build
 
       - name: Install and test the package
+        if: steps.check-version.outputs.publish == 'true'
         run: |
           mkdir /tmp/install-test
           cp dist/*.whl /tmp/install-test
@@ -53,6 +76,7 @@ jobs:
           pytest --pyargs torchruntime  # run tests
 
       - name: Publish to PyPI
+        if: steps.check-version.outputs.publish == 'true'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           # repository-url: https://test.pypi.org/legacy/
