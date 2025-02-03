@@ -1,4 +1,5 @@
 from .installer import install
+from .utils.torch_test import test
 
 
 def print_usage(entry_command: str):
@@ -8,6 +9,7 @@ Usage: {entry_command} <command> [arguments]
 
 Commands:
     install             Install PyTorch packages
+    test [subcommand]   Run tests (subcommands: all, devices, math, functions)
     --help             Show this help message
 
 Examples:
@@ -15,6 +17,12 @@ Examples:
     {entry_command} install torch==2.2.0 torchvision==0.17.0
     {entry_command} install torch>=2.0.0 torchaudio
     {entry_command} install torch==2.1.* torchvision>=0.16.0 torchaudio==2.1.0
+
+    {entry_command} test          # Runs all tests (devices, math, functions)
+    {entry_command} test all      # Same as above
+    {entry_command} test devices  # Test only devices
+    {entry_command} test math     # Test only math
+    {entry_command} test functions # Test only functions
 
 If no packages are specified, the latest available versions
 of torch, torchaudio and torchvision will be installed.
@@ -26,7 +34,9 @@ Version specification formats (follows pip format):
     package~=2.1.0     Compatible release
     package==2.1.*     Any 2.1.x version
     package            Latest version
-    """.format(entry_command=entry_command)
+    """.format(
+        entry_command=entry_command
+    )
     print(usage.strip())
 
 
@@ -34,21 +44,19 @@ def main():
     import sys
 
     if len(sys.argv) < 2 or sys.argv[1] in ["--help", "-h"]:
-        # get the entry point
         entry_path = sys.argv[0]
-        if "__main__.py" in entry_path:
-            cli = "python -m torchruntime"
-        else:
-            cli = "torchruntime"
+        cli = "python -m torchruntime" if "__main__.py" in entry_path else "torchruntime"
         print_usage(cli)
         return
 
     command = sys.argv[1]
 
     if command == "install":
-        # Pass all arguments after 'install' to the install function
         package_versions = sys.argv[2:] if len(sys.argv) > 2 else None
         install(package_versions)
+    elif command == "test":
+        subcommand = sys.argv[2] if len(sys.argv) > 2 else "all"
+        test(subcommand)
     else:
         print(f"Unknown command: {command}")
         print_usage()
