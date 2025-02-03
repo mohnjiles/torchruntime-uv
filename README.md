@@ -38,6 +38,9 @@ import torchruntime
 torchruntime.configure()
 ```
 
+### (Optional) Step 3. Test torch
+Run `python -m torchruntime test` to run a set of tests to check whether the installed version of torch is working correctly.
+
 ## Customizing packages
 By default, `python -m torchruntime install` will install the latest available `torch`, `torchvision` and `torchaudio` suitable on the user's platform.
 
