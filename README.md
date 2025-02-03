@@ -25,13 +25,13 @@ Supports Windows, Linux, and Mac.
 
 This will install `torch`, `torchvision`, and `torchaudio`, and will decide the variant based on the user's OS, GPU manufacturer and GPU model number. See [customizing packages](#customizing-packages) for more options.
 
-### Step 2. Initialize torch
+### Step 2. Configure torch
 This should be run inside your program, to initialize the required environment variables (if any) for the variant of torch being used.
 
 ```py
 import torchruntime
 
-torchruntime.init_torch()
+torchruntime.configure()
 ```
 
 ## Customizing packages

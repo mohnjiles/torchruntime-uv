@@ -1,6 +1,6 @@
 import os
 import pytest
-from torchruntime.configure import _init_torch_internal as init_torch
+from torchruntime.configuration import _configure_internal as configure
 from torchruntime.consts import AMD, NVIDIA
 
 
@@ -40,7 +40,7 @@ def clean_env():
 
 def test_rocm_navi_3_settings():
     gpus = [create_gpu_info(AMD, "123", "Navi 31 XTX")]
-    init_torch(gpus, "rocm6.2")
+    configure(gpus, "rocm6.2")
 
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "11.0.0"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "0"
@@ -50,7 +50,7 @@ def test_rocm_navi_3_settings():
 
 def test_rocm_navi_2_settings():
     gpus = [create_gpu_info(AMD, "123", "Navi 21 XTX")]
-    init_torch(gpus, "rocm6.2")
+    configure(gpus, "rocm6.2")
 
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "10.3.0"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "0"
@@ -59,7 +59,7 @@ def test_rocm_navi_2_settings():
 
 def test_rocm_navi_1_settings():
     gpus = [create_gpu_info(AMD, "123", "Navi 14")]
-    init_torch(gpus, "rocm6.2")
+    configure(gpus, "rocm6.2")
 
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "10.3.0"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "0"
@@ -68,7 +68,7 @@ def test_rocm_navi_1_settings():
 
 def test_rocm_vega_2_settings():
     gpus = [create_gpu_info(AMD, "123", "Vega 20 Radeon VII")]
-    init_torch(gpus, "rocm6.2")
+    configure(gpus, "rocm6.2")
 
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "9.0.6"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "0"
@@ -77,7 +77,7 @@ def test_rocm_vega_2_settings():
 
 def test_rocm_vega_1_settings():
     gpus = [create_gpu_info(AMD, "123", "Vega 10")]
-    init_torch(gpus, "rocm5.2")
+    configure(gpus, "rocm5.2")
 
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "9.0.0"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "0"
@@ -86,7 +86,7 @@ def test_rocm_vega_1_settings():
 
 def test_rocm_ellesmere_settings():
     gpus = [create_gpu_info(AMD, "123", "Ellesmere RX 580")]
-    init_torch(gpus, "rocm6.2")
+    configure(gpus, "rocm6.2")
 
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "8.0.3"
     assert os.environ.get("ROC_ENABLE_PRE_VEGA") == "1"
@@ -95,7 +95,7 @@ def test_rocm_ellesmere_settings():
 
 def test_rocm_unknown_gpu_settings():
     gpus = [create_gpu_info(AMD, "123", "Unknown GPU")]
-    init_torch(gpus, "rocm6.2")
+    configure(gpus, "rocm6.2")
 
     assert "ROC_ENABLE_PRE_VEGA" not in os.environ
     assert "HIP_VISIBLE_DEVICES" not in os.environ
@@ -104,7 +104,7 @@ def test_rocm_unknown_gpu_settings():
 
 def test_rocm_multiple_gpus_same_model():
     gpus = [create_gpu_info(AMD, "123", "Navi 31 XTX"), create_gpu_info(AMD, "124", "Navi 31 XT")]
-    init_torch(gpus, "rocm6.2")
+    configure(gpus, "rocm6.2")
 
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "11.0.0"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "0,1"
@@ -122,7 +122,7 @@ def test_rocm_multiple_gpus_navi3_navi2__newer_gpu_first():
         create_gpu_info(AMD, "73f0", "Navi 33 [Radeon RX 7600M XT]"),
         create_gpu_info(AMD, "73bf", "Navi 21 [Radeon RX 6800/6800 XT / 6900 XT]"),
     ]
-    init_torch(gpus, "rocm6.2")
+    configure(gpus, "rocm6.2")
 
     # Should use Navi 3 settings since at least one GPU is Navi 3
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "11.0.0"
@@ -137,7 +137,7 @@ def test_rocm_multiple_gpus_navi2_navi3__newer_gpu_second():
         create_gpu_info(AMD, "73bf", "Navi 21 [Radeon RX 6800/6800 XT / 6900 XT]"),
         create_gpu_info(AMD, "73f0", "Navi 33 [Radeon RX 7600M XT]"),
     ]
-    init_torch(gpus, "rocm6.2")
+    configure(gpus, "rocm6.2")
 
     # Should use Navi 3 settings since at least one GPU is Navi 3
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "11.0.0"
@@ -152,7 +152,7 @@ def test_rocm_multiple_gpus_vega2_navi2():
         create_gpu_info(AMD, "66af", "Vega 20 [Radeon VII]"),
         create_gpu_info(AMD, "73bf", "Navi 21 [Radeon RX 6800/6800 XT / 6900 XT]"),
     ]
-    init_torch(gpus, "rocm6.2")
+    configure(gpus, "rocm6.2")
 
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "10.3.0"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "1"
@@ -166,7 +166,7 @@ def test_rocm_multiple_gpus_navi2_vega1():
         create_gpu_info(AMD, "73bf", "Navi 21 [Radeon RX 6800/6800 XT / 6900 XT]"),
         create_gpu_info(AMD, "6867", "Vega 10 XL [Radeon Pro Vega 56]"),
     ]
-    init_torch(gpus, "rocm6.2")
+    configure(gpus, "rocm6.2")
 
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "10.3.0"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "0"
@@ -180,7 +180,7 @@ def test_rocm_multiple_gpus_navi3_ellesmere():
         create_gpu_info(AMD, "73f0", "Navi 33 [Radeon RX 7600M XT]"),
         create_gpu_info(AMD, "67df", "Ellesmere [Radeon RX 470/480/570/570X/580/580X/590]"),
     ]
-    init_torch(gpus, "rocm6.2")  # need to figure this out
+    configure(gpus, "rocm6.2")  # need to figure this out
 
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "11.0.0"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "0"
@@ -191,7 +191,7 @@ def test_rocm_multiple_gpus_navi3_ellesmere():
 
 def test_rocm_empty_gpu_list():
     gpus = []
-    init_torch(gpus, "rocm6.2")
+    configure(gpus, "rocm6.2")
 
     assert "ROC_ENABLE_PRE_VEGA" not in os.environ
     assert "HIP_VISIBLE_DEVICES" not in os.environ
@@ -199,29 +199,29 @@ def test_rocm_empty_gpu_list():
 
 
 def test_mac_settings(monkeypatch):
-    monkeypatch.setattr("torchruntime.configure.os_name", "Darwin")
+    monkeypatch.setattr("torchruntime.configuration.os_name", "Darwin")
 
     gpus = []
-    init_torch(gpus, "cpu")
+    configure(gpus, "cpu")
 
     assert os.environ.get("PYTORCH_ENABLE_MPS_FALLBACK") == "1"
 
 
 def test_cuda_nvidia_settings_16xx():
     gpus = [create_gpu_info(NVIDIA, "2182", "TU116 [GeForce GTX 1660 Ti]")]
-    init_torch(gpus, "cu124")
+    configure(gpus, "cu124")
 
 
 def test_cuda_nvidia_t600_and_later_settings():
     gpus = [create_gpu_info(NVIDIA, "1fb6", "TU117GLM [T600 Laptop GPU]")]
-    init_torch(gpus, "cu124")
+    configure(gpus, "cu124")
 
 
 def test_cuda_nvidia_tesla_k40m_settings():
     gpus = [create_gpu_info(NVIDIA, "1023", "GK110BGL [Tesla K40m]")]
-    init_torch(gpus, "cu124")
+    configure(gpus, "cu124")
 
 
 def test_cuda_nvidia_non_full_precision_gpu_settings():
     gpus = [create_gpu_info(NVIDIA, "2504", "GA106 [GeForce RTX 3060 Lite Hash Rate]")]
-    init_torch(gpus, "cu124")
+    configure(gpus, "cu124")

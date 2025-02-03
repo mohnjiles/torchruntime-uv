@@ -4,14 +4,14 @@ from .device_db import get_discrete_gpus
 from .platform_detection import get_torch_platform, os_name
 
 
-def init_torch():
+def configure():
     discrete_gpu_infos = get_discrete_gpus()
     torch_platform = get_torch_platform(discrete_gpu_infos)
 
-    _init_torch_internal(discrete_gpu_infos, torch_platform)
+    _configure_internal(discrete_gpu_infos, torch_platform)
 
 
-def _init_torch_internal(discrete_gpu_infos, torch_platform):
+def _configure_internal(discrete_gpu_infos, torch_platform):
     if torch_platform.startswith("rocm"):
         check_rocm_permissions()
         set_rocm_env_vars(discrete_gpu_infos, torch_platform)
