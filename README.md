@@ -6,7 +6,9 @@
 This package is used by [Easy Diffusion](https://github.com/easydiffusion/easydiffusion), but you're welcome to use it as well. It's useful for developers who make PyTorch-based apps that target users with NVIDIA, AMD and Intel graphics cards (as well as CPU-only usage), on Windows, Mac and Linux.
 
 **Platforms:** `cpu`, `cuda`, `rocm`, `xpu`, `directml`, `ipex`
+
 **Operating systems:** `Windows`, `Linux`, `Mac` (Apple Silicon and Intel)
+
 **GPU Manufacturers:** `NVIDIA`, `AMD`, `Intel`
 
 ### Why?
