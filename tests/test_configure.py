@@ -18,7 +18,6 @@ def clean_env():
         "HIP_VISIBLE_DEVICES",
         "ROC_ENABLE_PRE_VEGA",
         "HSA_ENABLE_SDMA",
-        "FORCE_FULL_PRECISION",
         "PYTORCH_ENABLE_MPS_FALLBACK",
     ]
 
@@ -46,7 +45,6 @@ def test_rocm_navi_3_settings():
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "11.0.0"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "0"
     assert "ROC_ENABLE_PRE_VEGA" not in os.environ
-    assert "FORCE_FULL_PRECISION" not in os.environ
     assert "PYTORCH_ENABLE_MPS_FALLBACK" not in os.environ
 
 
@@ -57,7 +55,6 @@ def test_rocm_navi_2_settings():
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "10.3.0"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "0"
     assert "ROC_ENABLE_PRE_VEGA" not in os.environ
-    assert "FORCE_FULL_PRECISION" not in os.environ
 
 
 def test_rocm_navi_1_settings():
@@ -66,7 +63,6 @@ def test_rocm_navi_1_settings():
 
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "10.3.0"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "0"
-    assert os.environ.get("FORCE_FULL_PRECISION") == "yes"
     assert "ROC_ENABLE_PRE_VEGA" not in os.environ
 
 
@@ -76,7 +72,6 @@ def test_rocm_vega_2_settings():
 
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "9.0.6"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "0"
-    assert "FORCE_FULL_PRECISION" not in os.environ
     assert "ROC_ENABLE_PRE_VEGA" not in os.environ
 
 
@@ -86,7 +81,6 @@ def test_rocm_vega_1_settings():
 
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "9.0.0"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "0"
-    assert "FORCE_FULL_PRECISION" not in os.environ
     assert "ROC_ENABLE_PRE_VEGA" not in os.environ
 
 
@@ -97,7 +91,6 @@ def test_rocm_ellesmere_settings():
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "8.0.3"
     assert os.environ.get("ROC_ENABLE_PRE_VEGA") == "1"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "0"
-    assert "FORCE_FULL_PRECISION" not in os.environ
 
 
 def test_rocm_unknown_gpu_settings():
@@ -107,7 +100,6 @@ def test_rocm_unknown_gpu_settings():
     assert "ROC_ENABLE_PRE_VEGA" not in os.environ
     assert "HIP_VISIBLE_DEVICES" not in os.environ
     assert "HSA_OVERRIDE_GFX_VERSION" not in os.environ
-    assert "FORCE_FULL_PRECISION" not in os.environ
 
 
 def test_rocm_multiple_gpus_same_model():
@@ -117,7 +109,6 @@ def test_rocm_multiple_gpus_same_model():
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "11.0.0"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "0,1"
     assert "ROC_ENABLE_PRE_VEGA" not in os.environ
-    assert "FORCE_FULL_PRECISION" not in os.environ
 
 
 def print_gpu_wasted_warning():
@@ -137,7 +128,6 @@ def test_rocm_multiple_gpus_navi3_navi2__newer_gpu_first():
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "11.0.0"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "0"
     assert "ROC_ENABLE_PRE_VEGA" not in os.environ
-    assert "FORCE_FULL_PRECISION" not in os.environ
 
     print_gpu_wasted_warning()
 
@@ -153,7 +143,6 @@ def test_rocm_multiple_gpus_navi2_navi3__newer_gpu_second():
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "11.0.0"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "1"
     assert "ROC_ENABLE_PRE_VEGA" not in os.environ
-    assert "FORCE_FULL_PRECISION" not in os.environ
 
     print_gpu_wasted_warning()
 
@@ -168,7 +157,6 @@ def test_rocm_multiple_gpus_vega2_navi2():
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "10.3.0"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "1"
     assert "ROC_ENABLE_PRE_VEGA" not in os.environ
-    assert "FORCE_FULL_PRECISION" not in os.environ
 
     print_gpu_wasted_warning()
 
@@ -182,7 +170,6 @@ def test_rocm_multiple_gpus_navi2_vega1():
 
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "10.3.0"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "0"
-    assert "FORCE_FULL_PRECISION" not in os.environ
     assert "ROC_ENABLE_PRE_VEGA" not in os.environ
 
     print_gpu_wasted_warning()
@@ -198,7 +185,6 @@ def test_rocm_multiple_gpus_navi3_ellesmere():
     assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "11.0.0"
     assert os.environ.get("HIP_VISIBLE_DEVICES") == "0"
     assert "ROC_ENABLE_PRE_VEGA" not in os.environ
-    assert "FORCE_FULL_PRECISION" not in os.environ
 
     print_gpu_wasted_warning()
 
@@ -210,7 +196,6 @@ def test_rocm_empty_gpu_list():
     assert "ROC_ENABLE_PRE_VEGA" not in os.environ
     assert "HIP_VISIBLE_DEVICES" not in os.environ
     assert "HSA_OVERRIDE_GFX_VERSION" not in os.environ
-    assert "FORCE_FULL_PRECISION" not in os.environ
 
 
 def test_mac_settings(monkeypatch):
@@ -220,32 +205,23 @@ def test_mac_settings(monkeypatch):
     init_torch(gpus, "cpu")
 
     assert os.environ.get("PYTORCH_ENABLE_MPS_FALLBACK") == "1"
-    assert "FORCE_FULL_PRECISION" not in os.environ
 
 
 def test_cuda_nvidia_settings_16xx():
     gpus = [create_gpu_info(NVIDIA, "2182", "TU116 [GeForce GTX 1660 Ti]")]
     init_torch(gpus, "cu124")
 
-    assert os.environ.get("FORCE_FULL_PRECISION") == "yes"
-
 
 def test_cuda_nvidia_t600_and_later_settings():
     gpus = [create_gpu_info(NVIDIA, "1fb6", "TU117GLM [T600 Laptop GPU]")]
     init_torch(gpus, "cu124")
-
-    assert os.environ.get("FORCE_FULL_PRECISION") == "yes"
 
 
 def test_cuda_nvidia_tesla_k40m_settings():
     gpus = [create_gpu_info(NVIDIA, "1023", "GK110BGL [Tesla K40m]")]
     init_torch(gpus, "cu124")
 
-    assert os.environ.get("FORCE_FULL_PRECISION") == "yes"
-
 
 def test_cuda_nvidia_non_full_precision_gpu_settings():
     gpus = [create_gpu_info(NVIDIA, "2504", "GA106 [GeForce RTX 3060 Lite Hash Rate]")]
     init_torch(gpus, "cu124")
-
-    assert "FORCE_FULL_PRECISION" not in os.environ

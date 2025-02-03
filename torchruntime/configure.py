@@ -1,10 +1,7 @@
 import os
-import re
 
 from .device_db import get_discrete_gpus
 from .platform_detection import get_torch_platform, os_name
-
-NVIDIA_FULL_PRECISION_DEVICES = re.compile(r"\b(?:1630|1650|1660|tesla k40m|tu\d{2,}.+t\d{2,})\b", re.IGNORECASE)
 
 
 def init_torch():
@@ -18,8 +15,6 @@ def _init_torch_internal(discrete_gpu_infos, torch_platform):
     if torch_platform.startswith("rocm"):
         check_rocm_permissions()
         set_rocm_env_vars(discrete_gpu_infos, torch_platform)
-    elif torch_platform.startswith("cu"):
-        set_cuda_env_vars(discrete_gpu_infos, torch_platform)
     elif os_name == "Darwin":
         set_mac_env_vars(discrete_gpu_infos, torch_platform)
 
@@ -71,8 +66,6 @@ def set_rocm_env_vars(discrete_gpu_infos, torch_platform):
     elif has_navi1:
         env["HSA_OVERRIDE_GFX_VERSION"] = "10.3.0"
         # env["HSA_ENABLE_SDMA"] = "0"  # uncomment this if facing errors like in https://github.com/ROCm/ROCm/issues/2616
-        env["FORCE_FULL_PRECISION"] = "yes"  # https://github.com/ROCm/ROCm/issues/2527
-        # FORCE_FULL_PRECISION won't be necessary once this is fixed (and torch2 wheels are released for ROCm 6.2): https://github.com/pytorch/pytorch/issues/132570#issuecomment-2313071756
         env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(discrete_gpu_infos, "Navi 1")
     elif has_vega2:
         env["HSA_OVERRIDE_GFX_VERSION"] = "9.0.6"
@@ -89,19 +82,6 @@ def set_rocm_env_vars(discrete_gpu_infos, torch_platform):
         env["ROC_ENABLE_PRE_VEGA"] = "1"
         print(f"[WARNING] Unrecognized AMD graphics card: {device_names}")
         return
-
-    _set_env_vars(env)
-
-
-def set_cuda_env_vars(discrete_gpu_infos, torch_platform):
-    if not discrete_gpu_infos:
-        return
-
-    device_names = [device_name for *_, device_name in discrete_gpu_infos]
-    env = {}
-
-    if any(NVIDIA_FULL_PRECISION_DEVICES.search(device_name) for device_name in device_names):
-        env["FORCE_FULL_PRECISION"] = "yes"
 
     _set_env_vars(env)
 
