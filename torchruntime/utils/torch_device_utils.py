@@ -1,6 +1,15 @@
 import sys
 from typing import Union
 
+CPU = "cpu"
+CUDA = "cuda"
+XPU = "xpu"
+MPS = "mps"
+DIRECTML = "directml"
+MTIA = "mtia"
+
+SUPPORTED_BACKENDS = (CPU, CUDA, XPU, MPS, DIRECTML, MTIA)
+
 if sys.version_info < (3, 9):
     # polyfill for callable static methods
     class CallableStaticMethod(staticmethod):
@@ -33,18 +42,18 @@ def get_installed_torch_platform():
     from platform import system as os_name
 
     if _is_directml_platform_available():
-        return "directml", torch.directml
+        return DIRECTML, torch.directml
 
     if torch.cuda.is_available():
-        return "cuda", torch.cuda
-    if hasattr(torch, "xpu") and torch.xpu.is_available():
-        return "xpu", torch.xpu
-    if hasattr(torch, "mps") and os_name() == "Darwin":
-        return "mps", torch.mps
-    if hasattr(torch, "mtia") and torch.mtia.is_available():
-        return "mtia", torch.mtia
+        return CUDA, torch.cuda
+    if hasattr(torch, XPU) and torch.xpu.is_available():
+        return XPU, torch.xpu
+    if hasattr(torch, MPS) and os_name() == "Darwin":
+        return MPS, torch.mps
+    if hasattr(torch, MTIA) and torch.mtia.is_available():
+        return MTIA, torch.mtia
 
-    return "cpu", torch.cpu
+    return CPU, torch.cpu
 
 
 def get_device_count() -> int:
@@ -57,10 +66,10 @@ def get_device_name(device) -> str:
     "Expects a torch.device as the argument"
 
     torch_platform_name, torch_platform = get_installed_torch_platform()
-    if torch_platform_name not in ("xpu", "cuda", "directml"):
+    if torch_platform_name not in (XPU, CUDA, DIRECTML):
         return f"{torch_platform_name}:{device.index}"
 
-    if torch_platform_name == "directml":
+    if torch_platform_name == DIRECTML:
         return torch_platform.device_name(device.index)
 
     return torch_platform.get_device_name(device.index)
@@ -79,7 +88,7 @@ def get_device(device: Union[int, str]):
         torch_platform_name, _ = get_installed_torch_platform()
         device_index = device
 
-    if torch_platform_name == "directml" and _is_directml_platform_available():
+    if torch_platform_name == DIRECTML and _is_directml_platform_available():
         return torch.directml.device(device_index)
 
     return torch.device(torch_platform_name, device_index)
