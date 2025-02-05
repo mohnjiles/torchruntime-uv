@@ -136,6 +136,7 @@ Please message on the [Discord community](https://discord.com/invite/u9yhsFmEkB)
 * [PCI Database](https://raw.githubusercontent.com/pciutils/pciids/refs/heads/master/pci.ids) automatically generated from the PCI ID Database at http://pci-ids.ucw.cz
 
 # More resources
+* [AMD HSA architectures for APUs](https://www.techpowerup.com/forums/threads/amd-graphics-ip.243974/)
 * [AMD GPU LLVM Architectures](https://web.archive.org/web/20241228163540/https://llvm.org/docs/AMDGPUUsage.html#processors)
 * [Status of ROCm support for AMD Navi 1](https://github.com/ROCm/ROCm/issues/2527)
 * [Torch support for ROCm 6.2 on AMD Navi 1](https://github.com/pytorch/pytorch/issues/132570#issuecomment-2313071756)
