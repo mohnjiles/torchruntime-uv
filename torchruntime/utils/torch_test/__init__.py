@@ -4,6 +4,10 @@ from ..torch_device_utils import get_installed_torch_platform, get_device_count,
 
 
 def test(subcommand):
+    from ...configuration import configure
+
+    configure()
+
     test_fn = globals().get(f"test_{subcommand}")
     if not test_fn or not callable(test_fn):
         raise RuntimeError(f"Unknown test sub-command: {subcommand}")
