@@ -37,7 +37,7 @@ def get_torch_platform(gpu_infos):
 
     if arch not in VALID_ARCHS[os_name]:
         raise NotImplementedError(
-            f"torch is not currently available for {os_name} on {arch} architecture! If this is no longer true, please contact torch-installer at {CONTACT_LINK}"
+            f"torch is not currently available for {os_name} on {arch} architecture! If this is no longer true, please contact torchruntime at {CONTACT_LINK}"
         )
 
     if len(gpu_infos) == 0:
@@ -48,7 +48,7 @@ def get_torch_platform(gpu_infos):
     if len(vendor_ids) > 1:
         device_names = list(gpu.vendor_name + " " + gpu.device_name for gpu in gpu_infos)
         raise NotImplementedError(
-            f"torch-installer does not currently support multiple graphics card manufacturers on the same computer: {device_names}! Please contact torch-installer at {CONTACT_LINK} with details about your hardware."
+            f"torchruntime does not currently support multiple graphics card manufacturers on the same computer: {device_names}! Please contact torchruntime at {CONTACT_LINK} with details about your hardware."
         )
 
     vendor_id = vendor_ids.pop()
@@ -66,7 +66,7 @@ def get_torch_platform(gpu_infos):
             ):
                 if py_version < (3, 9):
                     print(
-                        "[WARNING] Support for Python 3.8 was dropped in ROCm 6.2. torch-installer will default to using ROCm 6.1 instead, but consider switching to a newer Python version to use the latest ROCm!"
+                        "[WARNING] Support for Python 3.8 was dropped in ROCm 6.2. torchruntime will default to using ROCm 6.1 instead, but consider switching to a newer Python version to use the latest ROCm!"
                     )
                     return "rocm6.1"
                 return "rocm6.2"
@@ -80,7 +80,7 @@ def get_torch_platform(gpu_infos):
                 return "rocm4.2"
 
             print(
-                f"[WARNING] Unsupported AMD graphics card: {device_names}. If this is a recent graphics card (less than 8 years old), please contact torch-installer at {CONTACT_LINK} with details about your hardware."
+                f"[WARNING] Unsupported AMD graphics card: {device_names}. If this is a recent graphics card (less than 8 years old), please contact torchruntime at {CONTACT_LINK} with details about your hardware."
             )
             return "cpu"
         elif os_name == "Darwin":
@@ -90,26 +90,26 @@ def get_torch_platform(gpu_infos):
             return "cu124"
         elif os_name == "Darwin":
             raise NotImplementedError(
-                f"torch-installer does not currently support NVIDIA graphics cards on Macs! Please contact torch-installer at {CONTACT_LINK}"
+                f"torchruntime does not currently support NVIDIA graphics cards on Macs! Please contact torchruntime at {CONTACT_LINK}"
             )
     elif vendor_id == INTEL:
         if os_name == "Windows":
             if py_version < (3, 9):
                 print(
-                    "[WARNING] Support for Python 3.8 was dropped in torch 2.5, which supports a higher-performance 'xpu' backend for Intel. torch-installer will default to using 'directml' instead, but consider switching to a newer Python version to use the latest 'xpu' backend for Intel!"
+                    "[WARNING] Support for Python 3.8 was dropped in torch 2.5, which supports a higher-performance 'xpu' backend for Intel. torchruntime will default to using 'directml' instead, but consider switching to a newer Python version to use the latest 'xpu' backend for Intel!"
                 )
                 return "directml"
             return "xpu"
         elif os_name == "Linux":
             if py_version < (3, 9):
                 print(
-                    "[WARNING] Support for Python 3.8 was dropped in torch 2.5, which supports a higher-performance 'xpu' backend for Intel. torch-installer will default to using 'intel-extension-for-pytorch' instead, but consider switching to a newer Python version to use the latest 'xpu' backend for Intel!"
+                    "[WARNING] Support for Python 3.8 was dropped in torch 2.5, which supports a higher-performance 'xpu' backend for Intel. torchruntime will default to using 'intel-extension-for-pytorch' instead, but consider switching to a newer Python version to use the latest 'xpu' backend for Intel!"
                 )
                 return "ipex"
             return "xpu"
         else:
             raise NotImplementedError(
-                f"torch-installer does not currently support Intel graphics cards on Macs! Please contact torch-installer at {CONTACT_LINK}"
+                f"torchruntime does not currently support Intel graphics cards on Macs! Please contact torchruntime at {CONTACT_LINK}"
             )
 
     print(f"Unrecognized vendor: {gpu_infos}")

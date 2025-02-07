@@ -57,8 +57,8 @@ def get_install_commands(torch_platform, packages):
         if os_name == "Windows" and ("torchvision" in packages or "torchaudio" in packages):
             print(
                 f"[WARNING] The preview build of 'xpu' on Windows currently only supports torch, not torchvision/torchaudio. "
-                f"torch-installer will instead use the nightly build, to get the 'xpu' version of torchaudio and torchvision as well. "
-                f"Please contact torch-installer if this is no longer accurate: {CONTACT_LINK}"
+                f"torchruntime will instead use the nightly build, to get the 'xpu' version of torchaudio and torchvision as well. "
+                f"Please contact torchruntime if this is no longer accurate: {CONTACT_LINK}"
             )
             index_url = f"https://download.pytorch.org/whl/nightly/{torch_platform}"
         else:
