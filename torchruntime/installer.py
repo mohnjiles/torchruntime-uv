@@ -4,7 +4,7 @@ import platform
 import subprocess
 
 from .consts import CONTACT_LINK
-from .device_db import get_discrete_gpus
+from .device_db import get_gpus
 from .platform_detection import get_torch_platform
 
 os_name = platform.system()
@@ -91,8 +91,8 @@ def install(packages=[]):
     packages: a list of strings with package names (and optionally their versions in pip-format). e.g. ["torch", "torchvision"] or ["torch>=2.0", "torchaudio==0.16.0"]. Defaults to ["torch", "torchvision", "torchaudio"].
     """
 
-    discrete_gpu_infos = get_discrete_gpus()
-    torch_platform = get_torch_platform(discrete_gpu_infos)
+    gpu_infos = get_gpus()
+    torch_platform = get_torch_platform(gpu_infos)
     cmds = get_install_commands(torch_platform, packages)
     cmds = get_pip_commands(cmds)
     run_commands(cmds)

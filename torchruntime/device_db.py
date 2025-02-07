@@ -4,10 +4,21 @@ import json
 import sqlite3
 import platform
 import subprocess
+from dataclasses import dataclass
 
 from .consts import NVIDIA, AMD, INTEL
 
 DEVICE_DB_FILE = "gpu_pci_ids.db"  # this file will only include AMD, NVIDIA and Discrete Intel GPUs
+
+
+@dataclass
+class GPU:
+    vendor_id: str
+    vendor_name: str
+    device_id: str
+    device_name: str
+    is_discrete: bool
+
 
 GPU_DEVICES = {  # if the value is a regex, it'll be applied to the device_name. if the value is a dict, the pci_id will be looked up
     AMD: {
@@ -178,15 +189,14 @@ def get_pci_ids():
 def get_device_infos(pci_ids):
     """
     Reads the given SQLite database file and queries the `pci_ids` table
-    for matching vendor_id and device_id. Returns a list of tuples containing
-    (vendor_id, vendor_name, device_id, device_name).
+    for matching vendor_id and device_id.
 
     Args:
         db_file_name (str): Path to the SQLite database file.
         pci_ids (list of tuples): List of (vendor_id, device_id) pairs to match.
 
     Returns:
-        list of tuples: List of (vendor_id, vendor_name, device_id, device_name).
+        list of `torchruntime.device_db.GPU` objects
     """
     result = []
 
@@ -198,7 +208,7 @@ def get_device_infos(pci_ids):
     try:
         # Create a query to retrieve matching rows
         query = """
-        SELECT vendor_id, vendor_name, device_id, device_name
+        SELECT vendor_id, vendor_name, device_id, device_name, is_discrete
         FROM pci_ids
         WHERE vendor_id = ? AND device_id = ?
         """
@@ -207,7 +217,10 @@ def get_device_infos(pci_ids):
         for vendor_id, device_id in pci_ids:
             cursor.execute(query, (vendor_id, device_id))
             rows = cursor.fetchall()
-            result.extend(rows)
+            for row in rows:
+                gpu = GPU(*row)
+                gpu.is_discrete = bool(gpu.is_discrete)
+                result.append(gpu)
 
     finally:
         # Close the database connection
@@ -216,6 +229,6 @@ def get_device_infos(pci_ids):
     return result
 
 
-def get_discrete_gpus():
+def get_gpus():
     pci_ids = get_pci_ids()
     return get_device_infos(pci_ids)

@@ -8,14 +8,12 @@ arch = platform.machine().lower()
 py_version = sys.version_info
 
 
-def get_torch_platform(discrete_gpu_infos):
+def get_torch_platform(gpu_infos):
     """
     Determine the appropriate PyTorch platform to use based on the system architecture, OS, and GPU information.
 
     Args:
-        discrete_gpu_infos (list of tuples): A list where each tuple represents a GPU. Each tuple contains:
-            - vendor_id (int): The vendor ID of the GPU (e.g., NVIDIA, AMD, INTEL constants).
-            - other details (e.g., model, memory, etc., not used directly in this function).
+        gpu_infos (list of `torchruntime.device_db.GPU` instances)
 
     Returns:
         str: A string representing the platform to use. Possible values:
@@ -42,13 +40,13 @@ def get_torch_platform(discrete_gpu_infos):
             f"torch is not currently available for {os_name} on {arch} architecture! If this is no longer true, please contact torch-installer at {CONTACT_LINK}"
         )
 
-    if len(discrete_gpu_infos) == 0:
+    if len(gpu_infos) == 0:
         return "cpu"
 
-    vendor_ids = set(vendor_id for vendor_id, *_ in discrete_gpu_infos)
+    vendor_ids = set(gpu.vendor_id for gpu in gpu_infos)
 
     if len(vendor_ids) > 1:
-        device_names = list(vendor_name + " " + device_name for _, vendor_name, _, device_name in discrete_gpu_infos)
+        device_names = list(gpu.vendor_name + " " + gpu.device_name for gpu in gpu_infos)
         raise NotImplementedError(
             f"torch-installer does not currently support multiple graphics card manufacturers on the same computer: {device_names}! Please contact torch-installer at {CONTACT_LINK} with details about your hardware."
         )
@@ -58,7 +56,7 @@ def get_torch_platform(discrete_gpu_infos):
         if os_name == "Windows":
             return "directml"
         elif os_name == "Linux":
-            device_names = set(device_name for *_, device_name in discrete_gpu_infos)
+            device_names = set(gpu.device_name for gpu in gpu_infos)
             if any(device_name.startswith("Navi") for device_name in device_names) and any(
                 device_name.startswith("Vega 2") for device_name in device_names
             ):  # lowest-common denominator is rocm5.7, which works with both Navi and Vega 20
@@ -114,6 +112,6 @@ def get_torch_platform(discrete_gpu_infos):
                 f"torch-installer does not currently support Intel graphics cards on Macs! Please contact torch-installer at {CONTACT_LINK}"
             )
 
-    print(f"Unrecognized vendor: {discrete_gpu_infos}")
+    print(f"Unrecognized vendor: {gpu_infos}")
 
     return "cpu"

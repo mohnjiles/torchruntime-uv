@@ -1,22 +1,22 @@
 import os
 
-from .device_db import get_discrete_gpus
+from .device_db import get_gpus
 from .platform_detection import get_torch_platform, os_name
 
 
 def configure():
-    discrete_gpu_infos = get_discrete_gpus()
-    torch_platform = get_torch_platform(discrete_gpu_infos)
+    gpu_infos = get_gpus()
+    torch_platform = get_torch_platform(gpu_infos)
 
-    _configure_internal(discrete_gpu_infos, torch_platform)
+    _configure_internal(gpu_infos, torch_platform)
 
 
-def _configure_internal(discrete_gpu_infos, torch_platform):
+def _configure_internal(gpu_infos, torch_platform):
     if torch_platform.startswith("rocm"):
         check_rocm_permissions()
-        set_rocm_env_vars(discrete_gpu_infos, torch_platform)
+        set_rocm_env_vars(gpu_infos, torch_platform)
     elif os_name == "Darwin":
-        set_mac_env_vars(discrete_gpu_infos, torch_platform)
+        set_mac_env_vars(gpu_infos, torch_platform)
 
 
 def check_rocm_permissions():
@@ -33,11 +33,11 @@ def check_rocm_permissions():
         )
 
 
-def set_rocm_env_vars(discrete_gpu_infos, torch_platform):
-    if not discrete_gpu_infos:
+def set_rocm_env_vars(gpu_infos, torch_platform):
+    if not gpu_infos:
         return
 
-    device_names = [device_name for *_, device_name in discrete_gpu_infos]
+    device_names = [gpu.device_name for gpu in gpu_infos]
     env = {}
 
     # interesting reading:
@@ -58,26 +58,26 @@ def set_rocm_env_vars(discrete_gpu_infos, torch_platform):
     if has_navi3:
         env["HSA_OVERRIDE_GFX_VERSION"] = "11.0.0"
         # Find the index of the first Navi 3 GPU
-        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(discrete_gpu_infos, "Navi 3")
+        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(gpu_infos, "Navi 3")
     elif has_navi2:
         env["HSA_OVERRIDE_GFX_VERSION"] = "10.3.0"
         # Find the index of the first Navi 2 GPU
-        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(discrete_gpu_infos, "Navi 2")
+        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(gpu_infos, "Navi 2")
     elif has_navi1:
         env["HSA_OVERRIDE_GFX_VERSION"] = "10.3.0"
         # env["HSA_ENABLE_SDMA"] = "0"  # uncomment this if facing errors like in https://github.com/ROCm/ROCm/issues/2616
-        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(discrete_gpu_infos, "Navi 1")
+        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(gpu_infos, "Navi 1")
     elif has_vega2:
         env["HSA_OVERRIDE_GFX_VERSION"] = "9.0.6"
-        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(discrete_gpu_infos, "Vega 2")
+        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(gpu_infos, "Vega 2")
     elif has_vega1:
         # # https://discord.com/channels/1014774730907209781/1329021732794667068/1329261488300363776
         env["HSA_OVERRIDE_GFX_VERSION"] = "9.0.0"
-        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(discrete_gpu_infos, "Vega 1")
+        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(gpu_infos, "Vega 1")
     elif has_ellesmere:
         env["HSA_OVERRIDE_GFX_VERSION"] = "8.0.3"  # https://github.com/ROCm/ROCm/issues/1659
         env["ROC_ENABLE_PRE_VEGA"] = "1"
-        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(discrete_gpu_infos, "Ellesmere")
+        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(gpu_infos, "Ellesmere")
     else:
         env["ROC_ENABLE_PRE_VEGA"] = "1"
         print(f"[WARNING] Unrecognized AMD graphics card: {device_names}")
@@ -86,12 +86,12 @@ def set_rocm_env_vars(discrete_gpu_infos, torch_platform):
     _set_env_vars(env)
 
 
-def set_mac_env_vars(discrete_gpu_infos, torch_platform):
+def set_mac_env_vars(gpu_infos, torch_platform):
     _set_env_vars({"PYTORCH_ENABLE_MPS_FALLBACK": "1"})
 
 
-def _visible_device_ids(discrete_gpu_info, family_name):
-    ids = [str(i) for i, (*_, name) in enumerate(discrete_gpu_info) if family_name in name]
+def _visible_device_ids(gpu_infos, family_name):
+    ids = [str(i) for i, gpu in enumerate(gpu_infos) if family_name in gpu.device_name]
     return ",".join(ids)
 
 
