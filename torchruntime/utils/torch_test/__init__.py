@@ -16,9 +16,18 @@ def test(subcommand):
 
 
 def test_all():
-    for fn in (test_devices, test_math, test_functions):
+    for fn in (test_import, test_devices, test_math, test_functions):
         fn()
         print("")
+
+
+def test_import():
+    print("--- IMPORT TEST ---")
+    import torch
+
+    print(f"Torch version: {torch.__version__}")
+
+    print("--- / IMPORT TEST ---")
 
 
 def test_devices():
