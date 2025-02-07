@@ -4,31 +4,12 @@ import sqlite3
 import re
 import sys
 
-AMD = "1002"
-NVIDIA = "10de"
-INTEL = "8086"
+from torchruntime.device_db import get_gpu_type, is_gpu_vendor
 
 # Compile all regular expressions
-ARC_REGEX = re.compile(r"\barc(\b|\W)")
 SKIP_LINE_REGEX = re.compile(r"^\t{2,}")
 VENDOR_REGEX = re.compile(r"^([0-9a-fA-F]{4})\s+(.*)")
 DEVICE_REGEX = re.compile(r"^\t([0-9a-fA-F]{4})\s+(.*)")
-GPU_NAME_REGEXES = {
-    AMD: {
-        "include": re.compile(r"\b(?:radeon|instinct|fire|rage|polaris)\b", re.IGNORECASE),
-        "exclude": re.compile(r"\b(?:audio|bridge)\b", re.IGNORECASE),
-    },
-    INTEL: {
-        "include": re.compile(r"\b(?:arc)\b", re.IGNORECASE),
-        "exclude": re.compile(r"\b(?:audio|bridge)\b", re.IGNORECASE),
-    },
-    NVIDIA: {
-        "include": re.compile(r"\b(?:geforce|riva|quadro|tesla|ion|grid|rtx|tu\d{2,}.+t\d{2,})\b", re.IGNORECASE),
-        "exclude": re.compile(
-            r"\b(?:audio|switch|pci|memory|smbus|ide|co-processor|bridge|usb|sata|controller)\b", re.IGNORECASE
-        ),
-    },
-}
 
 
 def process_pci_file(input_file: str, output_db: str):
@@ -43,7 +24,8 @@ def process_pci_file(input_file: str, output_db: str):
             vendor_id TEXT,
             vendor_name TEXT,
             device_id TEXT,
-            device_name TEXT
+            device_name TEXT,
+            is_discrete INTEGER
         )
     """
     )
@@ -62,7 +44,7 @@ def process_pci_file(input_file: str, output_db: str):
                 vendor_id, vendor_name = match_vendor.groups()
                 continue  # Move to next line for processing
 
-            if vendor_id not in (NVIDIA, INTEL, AMD):
+            if not is_gpu_vendor(vendor_id):
                 continue
 
             # Match device lines (single tab)
@@ -70,19 +52,19 @@ def process_pci_file(input_file: str, output_db: str):
             if match_device and vendor_id and vendor_name:
                 device_id, device_name = match_device.groups()
 
-                include_regex = GPU_NAME_REGEXES[vendor_id]["include"]
-                exclude_regex = GPU_NAME_REGEXES[vendor_id]["exclude"]
-
-                if not include_regex.search(device_name) or exclude_regex.search(device_name):
+                gpu_type = get_gpu_type(vendor_id, device_id, device_name)
+                if gpu_type == "NONE":
                     continue
+
+                is_discrete = 1 if gpu_type == "DISCRETE" else 0
 
                 # Insert the vendor and device information into the database
                 cursor.execute(
                     """
-                    INSERT INTO pci_ids (vendor_id, vendor_name, device_id, device_name)
-                    VALUES (?, ?, ?, ?)
+                    INSERT INTO pci_ids (vendor_id, vendor_name, device_id, device_name, is_discrete)
+                    VALUES (?, ?, ?, ?, ?)
                 """,
-                    (vendor_id, vendor_name, device_id, device_name),
+                    (vendor_id, vendor_name, device_id, device_name, is_discrete),
                 )
 
     # Commit the changes and close the connection

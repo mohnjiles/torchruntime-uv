@@ -27,13 +27,31 @@ def test_get_multiple_devices():
     assert ("10de", "NVIDIA Corporation", "2504", "GA106 [GeForce RTX 3060 Lite Hash Rate]") in result
 
 
-def test_get_amd_devices():
-    """Test retrieving AMD devices."""
+def test_get_amd_discrete_devices():
+    """Test retrieving AMD discrete devices."""
     input_ids = [("1002", "9495"), ("1002", "747e")]
     result = get_device_infos(input_ids)
     assert len(result) == 2
     assert ("1002", "Advanced Micro Devices, Inc. [AMD/ATI]", "9495", "RV730 [Radeon HD 4600 AGP Series]") in result
     assert ("1002", "Advanced Micro Devices, Inc. [AMD/ATI]", "747e", "Navi 32 [Radeon RX 7700 XT / 7800 XT]") in result
+
+
+def test_get_amd_integrated_devices():
+    """Test retrieving AMD integrated devices."""
+    input_ids = [("1002", "164c"), ("1002", "15bf")]
+    result = get_device_infos(input_ids)
+    assert len(result) == 2
+    assert ("1002", "Advanced Micro Devices, Inc. [AMD/ATI]", "164c", "Lucienne") in result
+    assert ("1002", "Advanced Micro Devices, Inc. [AMD/ATI]", "15bf", "Phoenix1") in result
+
+
+def test_get_intel_integrated_devices():
+    """Test retrieving Intel integrated devices."""
+    input_ids = [("8086", "46b6"), ("8086", "4e55")]
+    result = get_device_infos(input_ids)
+    assert len(result) == 2
+    assert ("8086", "Intel Corporation", "46b6", "AlderLake-P [Iris Xe Graphics]") in result
+    assert ("8086", "Intel Corporation", "4e55", "JasperLake [UHD Graphics]") in result
 
 
 def test_get_nonexistent_device():

@@ -5,9 +5,92 @@ import sqlite3
 import platform
 import subprocess
 
+from .consts import NVIDIA, AMD, INTEL
+
 DEVICE_DB_FILE = "gpu_pci_ids.db"  # this file will only include AMD, NVIDIA and Discrete Intel GPUs
 
+GPU_DEVICES = {  # if the value is a regex, it'll be applied to the device_name. if the value is a dict, the pci_id will be looked up
+    AMD: {
+        "discrete": re.compile(r"\b(?:radeon|instinct|fire|rage|polaris|aldebaran)\b", re.IGNORECASE),
+        "integrated": {  # pci_id -> (device_name, gfx_name, hsa_override)
+            "9874": ("Wani", "gfx801", "8.0.1"),
+            "98e4": ("Stoney", "gfx810", "8.1.0"),
+            "15dd": ("Raven Ridge", "gfx902", "9.1.0"),
+            "15d8": ("Picasso", "gfx903", "9.1.0"),
+            "1636": ("Renoir", "gfx90c", "9.3.0"),
+            "164c": ("Lucienne", "gfx90c", "9.3.0"),
+            "1638": ("Cezanne", "gfx90c", "9.3.0"),
+            "15e7": ("Barcelo", "gfx90c", "9.3.0"),
+            "13f9": ("Oberon", "gfx1013", "10.1.3"),
+            "1607": ("Arden", "gfx1020", "10.2.0"),
+            "163f": ("VanGogh", "gfx1033", "10.3.1"),
+            "164d": ("Rembrandt", "gfx1035", "10.3.3"),
+            "1681": ("Rembrandt", "gfx1035", "10.3.3"),
+            "164e": ("Raphael", "gfx1036", "10.3.6"),
+            "1506": ("Mendocino", "gfx1037", "10.3.7"),
+            "164f": ("Phoenix", "gfx1103", "11.0.1"),
+            "15bf": ("Phoenix1", "gfx1103", "11.0.1"),
+            "15c8": ("Phoenix2", "gfx1103", "11.0.4"),
+        },
+        "exclude": re.compile(r"\b(?:audio|bridge)\b", re.IGNORECASE),
+    },
+    INTEL: {
+        "discrete": re.compile(r"\b(?:arc)\b", re.IGNORECASE),
+        "integrated": re.compile(r"\b(?:iris|hd graphics|uhd graphics)\b", re.IGNORECASE),
+        "exclude": re.compile(r"\b(?:audio|bridge)\b", re.IGNORECASE),
+    },
+    NVIDIA: {
+        "discrete": re.compile(r"\b(?:geforce|riva|quadro|tesla|ion|grid|rtx|tu\d{2,}.+t\d{2,})\b", re.IGNORECASE),
+        "exclude": re.compile(
+            r"\b(?:audio|switch|pci|memory|smbus|ide|co-processor|bridge|usb|sata|controller)\b", re.IGNORECASE
+        ),
+    },
+}
+
+
 os_name = platform.system()
+
+
+def is_gpu_vendor(vendor_id):
+    return vendor_id in GPU_DEVICES
+
+
+def get_gpu_type(vendor_id, device_id, device_name):
+    """
+    Returns the GPU type of the given PCI device.
+
+    Args:
+        vendor_id (str): PCI Vendor ID.
+        device_id (str): PCI Device ID.
+        device_name (str): PCI Device Name.
+
+    Returns:
+        gpu_type (str): "DISCRETE", "INTEGRATED", or "NONE"
+    """
+
+    def matches(pattern):
+        if isinstance(pattern, re.Pattern):
+            return pattern.search(device_name)
+        if isinstance(pattern, dict):
+            return device_id in pattern
+        return False
+
+    vendor_devices = GPU_DEVICES[vendor_id]
+
+    discrete_devices = vendor_devices.get("discrete")
+    integrated_devices = vendor_devices.get("integrated")
+    exclude_devices = vendor_devices.get("exclude")
+
+    if matches(exclude_devices):
+        return "NONE"
+
+    if matches(integrated_devices):  # check integrated first, to avoid matching "Radeon" and classifying it as discrete
+        return "INTEGRATED"
+
+    if matches(discrete_devices):
+        return "DISCRETE"
+
+    return "NONE"
 
 
 def get_windows_output():
