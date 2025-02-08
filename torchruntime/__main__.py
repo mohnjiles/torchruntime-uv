@@ -1,5 +1,6 @@
 from .installer import install
 from .utils.torch_test import test
+from .utils import info
 
 
 def print_usage(entry_command: str):
@@ -24,6 +25,8 @@ Examples:
     {entry_command} test devices  # Test only devices
     {entry_command} test math     # Test only math
     {entry_command} test functions # Test only functions
+
+    {entry_command} info          # Prints the list of connected graphics cards, and the recommended torch platform
 
 If no packages are specified, the latest available versions
 of torch, torchaudio and torchvision will be installed.
@@ -58,6 +61,8 @@ def main():
     elif command == "test":
         subcommand = sys.argv[2] if len(sys.argv) > 2 else "all"
         test(subcommand)
+    elif command == "info":
+        info()
     else:
         print(f"Unknown command: {command}")
         print_usage()
