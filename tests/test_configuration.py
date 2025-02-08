@@ -190,6 +190,52 @@ def test_rocm_multiple_gpus_navi3_ellesmere():
     print_gpu_wasted_warning()
 
 
+@pytest.mark.parametrize(
+    "device_id,device_name,hsa_version,roc_enable_pre_vega",
+    [
+        ("15dd", "Raven Ridge", "9.1.0", None),
+        ("164c", "Lucienne", "9.0.12", None),
+        ("164d", "Rembrandt", "10.3.5", None),
+        ("15c8", "Phoenix2", "11.0.3", None),
+        ("1586", "Strix Halo", "11.5.1", None),
+    ],
+)
+def test_rocm_integrated_amd_gpu_variants(device_id, device_name, hsa_version, roc_enable_pre_vega):
+    gpus = [create_gpu_info(AMD, device_id, device_name, False)]
+    configure(gpus, "rocm6.2")
+
+    assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == hsa_version
+    if roc_enable_pre_vega:
+        assert os.environ.get("ROC_ENABLE_PRE_VEGA") == roc_enable_pre_vega
+    else:
+        assert "ROC_ENABLE_PRE_VEGA" not in os.environ
+    assert "HIP_VISIBLE_DEVICES" not in os.environ
+
+
+def test_rocm_integrated_and_discrete_amd_gpus_multiple():
+    gpus = [
+        create_gpu_info(AMD, "15d8", "Picasso", False),
+        create_gpu_info(AMD, "73bf", "Navi 21 [Radeon RX 6800/6800 XT / 6900 XT]", True),
+    ]
+    configure(gpus, "rocm6.2")
+
+    assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "10.3.0"
+    assert os.environ.get("HIP_VISIBLE_DEVICES") == "1"
+    assert "ROC_ENABLE_PRE_VEGA" not in os.environ
+
+
+def test_rocm_integrated_older_and_discrete_newer():
+    gpus = [
+        create_gpu_info(AMD, "9874", "Wani", False),
+        create_gpu_info(AMD, "73bf", "Navi 21 [Radeon RX 6800/6800 XT / 6900 XT]", True),
+    ]
+    configure(gpus, "rocm6.2")
+
+    assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "10.3.0"
+    assert os.environ.get("HIP_VISIBLE_DEVICES") == "1"
+    assert "ROC_ENABLE_PRE_VEGA" not in os.environ
+
+
 def test_rocm_empty_gpu_list():
     gpus = []
     configure(gpus, "rocm6.2")

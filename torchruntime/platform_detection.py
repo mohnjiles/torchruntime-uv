@@ -1,6 +1,7 @@
 import sys
 import platform
 
+from .device_db import GPU_DEVICES
 from .consts import AMD, INTEL, NVIDIA, CONTACT_LINK
 
 os_name = platform.system()
@@ -43,6 +44,20 @@ def get_torch_platform(gpu_infos):
     if len(gpu_infos) == 0:
         return "cpu"
 
+    discrete_devices, integrated_devices = [], []
+    for device in gpu_infos:
+        if device.is_discrete:
+            discrete_devices.append(device)
+        else:
+            integrated_devices.append(device)
+
+    if discrete_devices:
+        return _get_platform_for_discrete(discrete_devices)
+
+    return _get_platform_for_integrated(integrated_devices)
+
+
+def _get_platform_for_discrete(gpu_infos):
     vendor_ids = set(gpu.vendor_id for gpu in gpu_infos)
 
     if len(vendor_ids) > 1:
@@ -113,5 +128,43 @@ def get_torch_platform(gpu_infos):
             )
 
     print(f"Unrecognized vendor: {gpu_infos}")
+
+    return "cpu"
+
+
+def _get_platform_for_integrated(gpu_infos):
+    gpu = gpu_infos[0]
+
+    if os_name == "Windows":
+        return "directml"
+    elif os_name == "Linux":
+        if gpu.vendor_id == AMD:
+            integrated_amd_gpus = GPU_DEVICES[AMD]["integrated"]
+
+            family_name, gfx_id, hsa_version = integrated_amd_gpus.get(gpu.device_id, ("", "", ""))
+            if gfx_id.startswith("gfx11") or gfx_id.startswith("gfx103"):
+                if py_version < (3, 9):
+                    print(
+                        "[WARNING] Support for Python 3.8 was dropped in ROCm 6.2. torchruntime will default to using ROCm 6.1 instead, but consider switching to a newer Python version to use the latest ROCm!"
+                    )
+                    return "rocm6.1"
+                return "rocm6.2"
+            elif gfx_id.startswith("gfx102") or gfx_id.startswith("gfx101") or gfx_id.startswith("gfx90"):
+                return "rocm5.5"
+            elif gfx_id.startswith("gfx8"):
+                return "rocm4.2"
+
+            print(f"[WARNING] Unsupported AMD APU: {gpu}! Please contact torchruntime at {CONTACT_LINK}")
+        elif gpu.vendor_id == INTEL:
+            if py_version < (3, 9):
+                print(
+                    "[WARNING] Support for Python 3.8 was dropped in torch 2.5, which supports a higher-performance 'xpu' backend for Intel. torchruntime will default to using 'intel-extension-for-pytorch' instead, but consider switching to a newer Python version to use the latest 'xpu' backend for Intel!"
+                )
+                return "ipex"
+            return "xpu"
+    elif os_name == "Darwin":
+        print(
+            f"[WARNING] torchruntime does not currently support integrated graphics cards on Macs! Please contact torchruntime at {CONTACT_LINK}"
+        )
 
     return "cpu"

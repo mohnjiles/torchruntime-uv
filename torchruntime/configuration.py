@@ -1,6 +1,7 @@
 import os
 
-from .device_db import get_gpus
+from .consts import AMD
+from .device_db import get_gpus, GPU_DEVICES
 from .platform_detection import get_torch_platform, os_name
 
 
@@ -37,6 +38,20 @@ def set_rocm_env_vars(gpu_infos, torch_platform):
     if not gpu_infos:
         return
 
+    discrete_devices, integrated_devices = [], []
+    for device in gpu_infos:
+        if device.is_discrete:
+            discrete_devices.append(device)
+        else:
+            integrated_devices.append(device)
+
+    if discrete_devices:
+        return _set_rocm_vars_for_discrete(discrete_devices, all_gpu_info=gpu_infos)
+
+    return _set_rocm_vars_for_integrated(integrated_devices)
+
+
+def _set_rocm_vars_for_discrete(gpu_infos, all_gpu_info):
     device_names = [gpu.device_name for gpu in gpu_infos]
     env = {}
 
@@ -58,30 +73,45 @@ def set_rocm_env_vars(gpu_infos, torch_platform):
     if has_navi3:
         env["HSA_OVERRIDE_GFX_VERSION"] = "11.0.0"
         # Find the index of the first Navi 3 GPU
-        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(gpu_infos, "Navi 3")
+        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(all_gpu_info, "Navi 3")
     elif has_navi2:
         env["HSA_OVERRIDE_GFX_VERSION"] = "10.3.0"
         # Find the index of the first Navi 2 GPU
-        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(gpu_infos, "Navi 2")
+        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(all_gpu_info, "Navi 2")
     elif has_navi1:
         env["HSA_OVERRIDE_GFX_VERSION"] = "10.3.0"
         # env["HSA_ENABLE_SDMA"] = "0"  # uncomment this if facing errors like in https://github.com/ROCm/ROCm/issues/2616
-        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(gpu_infos, "Navi 1")
+        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(all_gpu_info, "Navi 1")
     elif has_vega2:
         env["HSA_OVERRIDE_GFX_VERSION"] = "9.0.6"
-        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(gpu_infos, "Vega 2")
+        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(all_gpu_info, "Vega 2")
     elif has_vega1:
         # # https://discord.com/channels/1014774730907209781/1329021732794667068/1329261488300363776
         env["HSA_OVERRIDE_GFX_VERSION"] = "9.0.0"
-        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(gpu_infos, "Vega 1")
+        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(all_gpu_info, "Vega 1")
     elif has_ellesmere:
         env["HSA_OVERRIDE_GFX_VERSION"] = "8.0.3"  # https://github.com/ROCm/ROCm/issues/1659
         env["ROC_ENABLE_PRE_VEGA"] = "1"
-        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(gpu_infos, "Ellesmere")
+        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(all_gpu_info, "Ellesmere")
     else:
         env["ROC_ENABLE_PRE_VEGA"] = "1"
         print(f"[WARNING] Unrecognized AMD graphics card: {device_names}")
         return
+
+    _set_env_vars(env)
+
+
+def _set_rocm_vars_for_integrated(gpu_infos):
+    gpu = gpu_infos[0]
+    env = {}
+
+    integrated_amd_gpus = GPU_DEVICES[AMD]["integrated"]
+
+    family_name, gfx_id, hsa_version = integrated_amd_gpus.get(gpu.device_id, ("", "", ""))
+    env["HSA_OVERRIDE_GFX_VERSION"] = hsa_version
+
+    if gfx_id.startswith("gfx8"):
+        env["ROC_ENABLE_PRE_VEGA"] = "1"
 
     _set_env_vars(env)
 

@@ -59,7 +59,7 @@ The list of platforms on which `torchruntime` can install a working variant of P
 
 **Note:** *This list is based on user feedback (since I don't have all the cards). Please let me know if your card is supported (or not) by opening a pull request or issue or messaging on [Discord](https://discord.com/invite/u9yhsFmEkB) (with supporting logs).*
 
-**CPU-only:**
+### CPU-only
 
 | OS  | Supported?| Notes  |
 |---|---|---|
@@ -68,7 +68,7 @@ The list of platforms on which `torchruntime` can install a working variant of P
 | Mac (M1/M2/M3/M4)  | ✅ Yes  | arm64. `mps` backend  |
 | Mac (Intel)  | ✅ Yes  | x86_64. Stopped after `torch 2.2.2`  |
 
-**NVIDIA:**
+### NVIDIA
 
 | Series  | Supported? | OS | Notes  |
 |---|---|---|---|
@@ -77,7 +77,9 @@ The list of platforms on which `torchruntime` can install a working variant of P
 | 20xx  | ✅ Yes  | Win/Linux  | Uses CUDA 124  |
 | 10xx/16xx  | ✅ Yes  | Win/Linux  | Uses CUDA 124. Full-precision required on 16xx series  |
 
-**AMD:**
+### AMD
+
+#### Discrete GPUs
 
 | Series  | Supported? | OS   | Notes  |
 |---|---|---|---|
@@ -86,11 +88,23 @@ The list of platforms on which `torchruntime` can install a working variant of P
 | 6xxx on Intel Mac  | ✅ Yes  | Intel Mac  | gfx103x. 'mps' backend |
 | 5xxx  | ✅ Yes  | Win/Linux    | Navi1/RDNA1 (gfx101x). Full-precision required. DirectML on Windows. Linux only supports upto ROCm 5.2. Waiting for [this](https://github.com/pytorch/pytorch/issues/132570#issuecomment-2313071756) for ROCm 6.2 support.  |
 | 5xxx on Intel Mac  | ❓ Untested (WIP)  | Intel Mac  | gfx101x. Implemented but need testers, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
-| 4xxxG/Radeon VII  | ✅ Yes  | Win/[Linux](https://discord.com/channels/1014774730907209781/1329021732794667068/1329048324405465108)  | Vega 20 gfx906. Need testers for Windows, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
-| 2xxxG/Radeon RX Vega 56  | ✅ Yes  | [Win](https://discord.com/channels/1014774730907209781/1329021732794667068/1331203312137273375)/[Linux](https://discord.com/channels/1014774730907209781/1329021732794667068/1329261488300363776)  | Vega 10 gfx900. ROCm 5.2 on Linux. DirectML on Windows |
+| Radeon VII  | ✅ Yes  | Win/[Linux](https://discord.com/channels/1014774730907209781/1329021732794667068/1329048324405465108)  | Vega 20 gfx906. Need testers for Windows, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
+| Radeon RX Vega 56  | ✅ Yes  | [Win](https://discord.com/channels/1014774730907209781/1329021732794667068/1331203312137273375)/[Linux](https://discord.com/channels/1014774730907209781/1329021732794667068/1329261488300363776)  | Vega 10 gfx900. ROCm 5.2 on Linux. DirectML on Windows |
 | 4xx/5xx/Polaris  | ⚠️ Partial  | Win  | gfx80x. Works with DirectML on Windows ([notes](https://discord.com/channels/1014774730907209781/1329021732794667068/1331199652451713044), [4GB bug](https://github.com/microsoft/DirectML/issues/579#issuecomment-2178963936)). Did not work with ROCm5.7 with custom-compiled PyTorch 1.13 on Linux ([notes](https://discord.com/channels/1014774730907209781/1329021732794667068/1331486882479210602)). |
 
-**Apple:**
+#### Integrated GPUs (APU)
+
+| Series  | Supported? | OS   | Notes  |
+|---|---|---|---|
+| Radeon 840M/860M/880M/890M/8040S/8050S/8060S (Strix/Strix Halo) | ⚠️ Partial  | Win/Linux    | gfx115x/RDNA3.5. Works with DirectML on Windows. Need testers for Linux, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
+| Radeon 740M/760M/780M (Phoenix/Hawk Point)  | ⚠️ Partial  | Win/Linux    | gfx1103/RDNA3. Works with [DirectML on Windows](https://discord.com/channels/1014774730907209781/1324044688751333472/1332016666346913915). Need testers for Linux, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
+| Radeon 610M/660M/680M (Rembrandt/Raphael/Mendocino/VanGogh)  | ❓ Untested (WIP)  | Win/Linux    | gfx103x/RDNA2. Need testers for Windows and Linux, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
+| Ryzen 5000 series ([Cezanne](https://www.cpu-infos.net/amd/amd-cpus-by-core-name/Cezanne/)/[Lucienne](https://www.cpu-infos.net/amd/amd-cpus-by-core-name/Lucienne/)) | ❓ Untested (WIP)  | Win/Linux    | gfx90c/GCN5.1. Need testers for Windows and Linux, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
+| Ryzen 4000 series ([Renoir](https://www.cpu-infos.net/amd/amd-cpus-by-core-name/Renoir/)) | ❓ Untested (WIP)  | Win/Linux    | gfx90c/GCN5.1. Need testers for Windows and Linux, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
+| Ryzen 3000 series ([Picasso](https://www.cpu-infos.net/amd/amd-cpus-by-core-name/Picasso/))  | ❓ Untested (WIP)  | Win/Linux    | gfx903/GCN5. Need testers for Windows and Linux, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
+| Ryzen 2000 series ([Raven Ridge](https://www.cpu-infos.net/amd/amd-cpus-by-core-name/Raven%20Ridge/))  | ❓ Untested (WIP)  | Win/Linux    | gfx902/GCN5. Need testers for Windows and Linux, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
+
+### Apple
 
 | Series  | Supported? |Notes  |
 |---|---|---|
@@ -98,12 +112,12 @@ The list of platforms on which `torchruntime` can install a working variant of P
 | AMD 6xxx on Intel Mac  | ✅ Yes  | Intel Mac  | gfx103x. 'mps' backend |
 | AMD 5xxx on Intel Mac  | ❓ Untested (WIP)  | Intel Mac  | gfx101x. Implemented but need testers, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
 
-**Intel:**
+### Intel
 
 | Series  | Supported? | OS | Notes  |
 |---|---|---|---|
 | Arc  | ❓ Untested (WIP)  | Win/Linux  | Implemented but need testers, please message on [Discord](https://discord.com/invite/u9yhsFmEkB). Backends: 'xpu' or DirectML or [ipex](https://github.com/intel/intel-extension-for-pytorch) |
-
+| Integrated Iris/HD/UHD  | ❓ Untested (WIP)  | Win/Linux  | Implemented but need testers, please message on [Discord](https://discord.com/invite/u9yhsFmEkB). Backends: 'xpu' or DirectML or [ipex](https://github.com/intel/intel-extension-for-pytorch) |
 
 # API
 See [API](API.md) for a complete list of module functions.
@@ -137,7 +151,7 @@ Please message on the [Discord community](https://discord.com/invite/u9yhsFmEkB)
 
 # More resources
 * [AMD Discrete GPU Names](https://en.wikipedia.org/wiki/List_of_AMD_graphics_processing_units) and [AMD Integrated GPU Names](https://en.wikipedia.org/wiki/AMD_APU)
-* [AMD HSA architectures for APUs](https://www.techpowerup.com/forums/threads/amd-graphics-ip.243974/)
+* [AMD HSA architectures for APUs](https://www.techpowerup.com/forums/threads/amd-graphics-ip.243974/), and also the [official ROCm list](https://github.com/ROCm/clr/blob/4b443f813335e40bf0a2b0686c311a19164ce30f/rocclr/device/pal/paldevice.cpp#L85-L117) (check the latest).
 * [AMD GPU LLVM Architectures](https://web.archive.org/web/20241228163540/https://llvm.org/docs/AMDGPUUsage.html#processors)
 * [Status of ROCm support for AMD Navi 1](https://github.com/ROCm/ROCm/issues/2527)
 * [Torch support for ROCm 6.2 on AMD Navi 1](https://github.com/pytorch/pytorch/issues/132570#issuecomment-2313071756)
