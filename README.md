@@ -8,6 +8,7 @@ This package is used by [Easy Diffusion](https://github.com/easydiffusion/easydi
 * **Platforms:** `cpu`, `cuda`, `rocm`, `xpu`, `directml`, `ipex`
 * **Operating systems:** `Windows`, `Linux`, `Mac` (Apple Silicon and Intel)
 * **GPU Manufacturers:** `NVIDIA`, `AMD`, `Intel`
+* **GPU Types:** Dedicated and Integrated
 
 ### Why?
 It lets you treat PyTorch as a single dependency (like it should be), and lets you assume that each user will get the most-performant variant of PyTorch suitable for their computer's OS and hardware.
