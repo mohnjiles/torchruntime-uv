@@ -61,10 +61,14 @@ def _get_platform_for_discrete(gpu_infos):
     vendor_ids = set(gpu.vendor_id for gpu in gpu_infos)
 
     if len(vendor_ids) > 1:
-        device_names = list(gpu.vendor_name + " " + gpu.device_name for gpu in gpu_infos)
-        raise NotImplementedError(
-            f"torchruntime does not currently support multiple graphics card manufacturers on the same computer: {device_names}! Please contact torchruntime at {CONTACT_LINK} with details about your hardware."
-        )
+        if NVIDIA in vendor_ids:  # temp hack to pick NVIDIA over everything else, pending a better fix
+            gpu_infos = [gpu for gpu in gpu_infos if gpu.vendor_id == NVIDIA]
+            vendor_ids = set(gpu.vendor_id for gpu in gpu_infos)
+        else:
+            device_names = list(gpu.vendor_name + " " + gpu.device_name for gpu in gpu_infos)
+            raise NotImplementedError(
+                f"torchruntime does not currently support multiple graphics card manufacturers on the same computer: {device_names}! Please contact torchruntime at {CONTACT_LINK} with details about your hardware."
+            )
 
     vendor_id = vendor_ids.pop()
     if vendor_id == AMD:

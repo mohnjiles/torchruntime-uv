@@ -140,12 +140,22 @@ def test_intel_gpu_mac(monkeypatch):
         get_torch_platform(gpu_infos)
 
 
-def test_multiple_gpu_vendors(monkeypatch):
+def test_multiple_gpu_vendors_with_NVIDIA(monkeypatch):
     monkeypatch.setattr("torchruntime.platform_detection.os_name", "Windows")
     monkeypatch.setattr("torchruntime.platform_detection.arch", "amd64")
     gpu_infos = [
         GPU(AMD, "AMD", 0x1234, "Radeon", True),
         GPU(NVIDIA, "NVIDIA", 0x5678, "GeForce", True),
+    ]
+    assert get_torch_platform(gpu_infos) == "cu124"
+
+
+def test_multiple_gpu_vendors_without_NVIDIA(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Windows")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "amd64")
+    gpu_infos = [
+        GPU(AMD, "AMD", 0x1234, "Radeon", True),
+        GPU(INTEL, "Intel", 0x5678, "Iris", True),
     ]
     with pytest.raises(NotImplementedError):
         get_torch_platform(gpu_infos)
@@ -376,6 +386,4 @@ def test_mixed_multiple_discrete_and_integrated(monkeypatch):
         GPU(NVIDIA, "NVIDIA", "2504", "RTX 3060", True),  # discrete NVIDIA
         GPU(AMD, "AMD", "73f0", "Navi 33", True),  # discrete AMD
     ]
-    # Should raise NotImplementedError due to multiple discrete GPU vendors
-    with pytest.raises(NotImplementedError):
-        get_torch_platform(gpu_infos)
+    assert get_torch_platform(gpu_infos) == "cu124"
