@@ -63,7 +63,7 @@ def get_installed_torch_platform():
 def get_device_count() -> int:
     torch_platform_name, torch_platform = get_installed_torch_platform()
 
-    if torch_platform_name == "cpu" and not hasattr(torch_platform, "device_count"):
+    if not hasattr(torch_platform, "device_count") or torch_platform_name == "cpu":
         return 1
 
     return torch_platform.device_count()
