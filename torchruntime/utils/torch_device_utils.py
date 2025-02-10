@@ -39,6 +39,7 @@ def _is_directml_platform_available():
 
 def get_installed_torch_platform():
     import torch
+    import torch.backends
     from platform import system as os_name
 
     if _is_directml_platform_available():
@@ -48,8 +49,11 @@ def get_installed_torch_platform():
         return CUDA, torch.cuda
     if hasattr(torch, XPU) and torch.xpu.is_available():
         return XPU, torch.xpu
-    if hasattr(torch, MPS) and os_name() == "Darwin":
-        return MPS, torch.mps
+    if os_name() == "Darwin":
+        if hasattr(torch, MPS):
+            return MPS, torch.mps
+        if hasattr(torch.backends, MPS) and torch.backends.mps.is_available():
+            return MPS, torch.backends.mps
     if hasattr(torch, MTIA) and torch.mtia.is_available():
         return MTIA, torch.mtia
 
