@@ -70,7 +70,11 @@ jobs:
         id: db_diff
         run: |
           db_diff=$(python scripts/sqldiff.py old.db torchruntime/gpu_pci_ids.db)
-          echo "db_diff=$db_diff" >> "$GITHUB_OUTPUT"
+          {
+            echo "db_diff=<<EOF"
+            echo "$db_diff"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Run tests
         if: steps.check_changes.outputs.has_changes == 'true'
