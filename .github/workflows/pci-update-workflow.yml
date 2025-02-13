@@ -62,6 +62,7 @@ jobs:
         if: steps.check_changes.outputs.has_changes == 'true'
         run: |
           rm torchruntime/gpu_pci_ids.db
+          export PYTHONPATH=$PYTHONPATH:$(pwd)
           python scripts/txt_to_db.py pci.ids.new torchruntime/gpu_pci_ids.db
 
       - name: Run tests
