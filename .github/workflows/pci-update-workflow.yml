@@ -132,9 +132,7 @@ jobs:
             Automatic update of PCI database. Install using `pip install --upgrade torchruntime==${{ steps.update_version.outputs.new_version }}`
 
             Changes:
-            ```
             ${{ env.DIFF_OUTPUT }}
-            ```
           draft: false
           prerelease: false
 
