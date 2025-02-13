@@ -67,14 +67,8 @@ jobs:
 
       - name: Get the DB diff
         if: steps.check_changes.outputs.has_changes == 'true'
-        id: db_diff
         run: |
-          db_diff=$(python scripts/sqldiff.py old.db torchruntime/gpu_pci_ids.db)
-          {
-            echo "db_diff=<<EOF"
-            echo "$db_diff"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
+          python scripts/sqldiff.py old.db torchruntime/gpu_pci_ids.db > db_diff.txt
 
       - name: Run tests
         if: steps.check_changes.outputs.has_changes == 'true'
@@ -135,7 +129,7 @@ jobs:
             Automatic update of PCI database. Install using `pip install --upgrade torchruntime==${{ steps.update_version.outputs.new_version }}`
 
             Changes:
-            ${{ steps.db_diff.outputs.db_diff }}
+            $(cat db_diff.txt)
           draft: false
           prerelease: false
 
