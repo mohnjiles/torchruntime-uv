@@ -66,7 +66,7 @@ jobs:
           python scripts/txt_to_db.py pci.ids.new torchruntime/gpu_pci_ids.db
 
       - name: Get the DB diff
-        if steps.check_changes.outputs.has_changes == 'true'
+        if: steps.check_changes.outputs.has_changes == 'true'
         id: db_diff
         run: |
           db_diff=$(python scripts/sqldiff.py old.db torchruntime/gpu_pci_ids.db)
