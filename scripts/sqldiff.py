@@ -23,12 +23,16 @@ res2 = set(cursor2.execute(QUERY).fetchall())
 cols = cursor1.execute(COL_NAME_QUERY).fetchall()
 cols = tuple(col[1] for col in cols)
 
-print("--- ADDITIONS ---")
+print("### Additions")
+print("```")
 print(cols)
 for row in res2 - res1:
     print(row)
+print("```")
 
-print("--- DELETIONS ---")
+print("### Deletions")
+print("```")
 print(cols)
 for row in res1 - res2:
     print(row)
+print("```")
