@@ -45,7 +45,7 @@ GPU_DEVICES = {  # if the value is a regex, it'll be applied to the device_name.
             "150e": ("Strix", "gfx1150", "11.5.0"),
             "1586": ("Strix Halo", "gfx1151", "11.5.1"),
         },
-        "exclude": re.compile(r"\b(?:audio|bridge)\b", re.IGNORECASE),
+        "exclude": re.compile(r"\b(?:audio|bridge|arden|oberon|stoney|wani)\b", re.IGNORECASE),
     },
     INTEL: {
         "discrete": re.compile(r"\b(?:arc)\b", re.IGNORECASE),
