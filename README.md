@@ -73,6 +73,7 @@ The list of platforms on which `torchruntime` can install a working variant of P
 
 | Series  | Supported? | OS | Notes  |
 |---|---|---|---|
+| 50xx  | ✅ Yes  | Win/Linux  | Uses CUDA 124 Nightly  |
 | 40xx  | ✅ Yes  | Win/Linux  | Uses CUDA 124  |
 | 30xx  | ✅ Yes  | Win/Linux  | Uses CUDA 124  |
 | 20xx  | ✅ Yes  | Win/Linux  | Uses CUDA 124  |
