@@ -98,7 +98,7 @@ The list of platforms on which `torchruntime` can install a working variant of P
 
 | Series  | Supported? | OS   | Notes  |
 |---|---|---|---|
-| Radeon 840M/860M/880M/890M/8040S/8050S/8060S (Strix/Strix Halo) | ⚠️ Partial  | Win/Linux    | gfx115x/RDNA3.5. Works with DirectML on Windows. Need testers for Linux, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
+| Radeon 840M/860M/880M/890M/8040S/8050S/8060S (Strix/Strix Halo/Krackan) | ⚠️ Partial  | Win/Linux    | gfx115x/RDNA3.5. Works with DirectML on Windows. Need testers for Linux, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
 | Radeon 740M/760M/780M (Phoenix/Hawk Point)  | ⚠️ Partial  | Win/Linux    | gfx1103/RDNA3. Works with [DirectML on Windows](https://discord.com/channels/1014774730907209781/1324044688751333472/1332016666346913915). Need testers for Linux, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
 | Radeon 610M/660M/680M (Rembrandt/Raphael/Mendocino/VanGogh)  | ❓ Untested (WIP)  | Win/Linux    | gfx103x/RDNA2. Need testers for Windows and Linux, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |
 | Ryzen 5000 series ([Cezanne](https://www.cpu-infos.net/amd/amd-cpus-by-core-name/Cezanne/)/[Lucienne](https://www.cpu-infos.net/amd/amd-cpus-by-core-name/Lucienne/)) | ❓ Untested (WIP)  | Win/Linux    | gfx90c/GCN5.1. Need testers for Windows and Linux, please message on [Discord](https://discord.com/invite/u9yhsFmEkB) |

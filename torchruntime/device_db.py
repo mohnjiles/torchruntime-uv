@@ -44,6 +44,7 @@ GPU_DEVICES = {  # if the value is a regex, it'll be applied to the device_name.
             # gfx1150 - https://github.com/ROCm/clr/commit/4bc515aa62368c6189d19e14b3ec18cb6dd4415e
             "150e": ("Strix", "gfx1150", "11.5.0"),
             "1586": ("Strix Halo", "gfx1151", "11.5.1"),
+            "1114": ("Krackan", "gfx1151", "11.5.1"),
         },
         "exclude": re.compile(r"\b(?:audio|bridge|arden|oberon|stoney|wani)\b", re.IGNORECASE),
     },
