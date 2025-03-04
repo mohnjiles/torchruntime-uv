@@ -39,6 +39,15 @@ def test_parse_macos_output():
     assert sorted(parse_macos_output(output)) == sorted(expected)
 
 
+def test_parse_two_gpus_of_same_model_output():
+    output = """
+    00:02.0 3D controller: NVIDIA Corporation GP108M [GeForce MX150] (rev a1) [10de:1d10]
+    01:00.0 3D controller: NVIDIA Corporation GP108M [GeForce MX150] (rev a1) [10de:1d10]
+    """
+    expected = [("10de", "1d10"), ("10de", "1d10")]
+    assert sorted(parse_linux_output(output)) == sorted(expected)
+
+
 def test_parse_macos_output_invalid_json():
     output = "{ invalid_json: true }"
     assert parse_macos_output(output) == []

@@ -129,29 +129,29 @@ def get_macos_output():
 
 
 def parse_windows_output(output):
-    pci_ids = set()
+    pci_ids = []
     for line in output.splitlines():
         match = re.search(r"VEN_(\w+)&DEV_(\w+)", line, re.IGNORECASE)
         if match:
             vendor_id = match.group(1).lower()
             device_id = match.group(2).lower()
-            pci_ids.add((vendor_id, device_id))
+            pci_ids.append((vendor_id, device_id))
     return list(pci_ids)
 
 
 def parse_linux_output(output):
-    pci_ids = set()
+    pci_ids = []
     for line in output.splitlines():
         match = re.search(r"\[(\w+):(\w+)\]", line)
         if match:
             vendor_id = match.group(1).lower()
             device_id = match.group(2).lower()
-            pci_ids.add((vendor_id, device_id))
+            pci_ids.append((vendor_id, device_id))
     return list(pci_ids)
 
 
 def parse_macos_output(output):
-    pci_ids = set()
+    pci_ids = []
     try:
         data = json.loads(output)
         displays = data.get("SPDisplaysDataType", [])
@@ -168,7 +168,7 @@ def parse_macos_output(output):
                         vendor_id = match.group(1).replace("0x", "").lower()
                     else:
                         continue
-                pci_ids.add((vendor_id, device_id))
+                pci_ids.append((vendor_id, device_id))
     except json.JSONDecodeError:
         pass
     return list(pci_ids)
