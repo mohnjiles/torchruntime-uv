@@ -10,7 +10,8 @@ from .platform_detection import get_torch_platform
 os_name = platform.system()
 
 PIP_PREFIX = [sys.executable, "-m", "pip", "install"]
-CUDA_REGEX = re.compile(r"^cu[\d+]")
+CUDA_REGEX = re.compile(r"^(nightly/)?cu\d+$")
+ROCM_REGEX = re.compile(r"^(nightly/)?rocm\d+\.\d+$")
 
 
 def get_install_commands(torch_platform, packages):
@@ -49,7 +50,7 @@ def get_install_commands(torch_platform, packages):
     if torch_platform == "cpu":
         return [packages]
 
-    if CUDA_REGEX.match(torch_platform) or torch_platform.startswith("rocm"):
+    if CUDA_REGEX.match(torch_platform) or ROCM_REGEX.match(torch_platform):
         index_url = f"https://download.pytorch.org/whl/{torch_platform}"
         return [packages + ["--index-url", index_url]]
 

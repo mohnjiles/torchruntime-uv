@@ -1,3 +1,4 @@
+import re
 import sys
 import platform
 
@@ -7,6 +8,8 @@ from .consts import AMD, INTEL, NVIDIA, CONTACT_LINK
 os_name = platform.system()
 arch = platform.machine().lower()
 py_version = sys.version_info
+
+BLACKWELL_DEVICES = re.compile(r"\b(?:5060|5070|5080|5090)\b")
 
 
 def get_torch_platform(gpu_infos):
@@ -106,6 +109,10 @@ def _get_platform_for_discrete(gpu_infos):
             return "mps"
     elif vendor_id == NVIDIA:
         if os_name in ("Windows", "Linux"):
+            device_names = set(gpu.device_name for gpu in gpu_infos)
+            if any(BLACKWELL_DEVICES.search(device_name) for device_name in device_names):
+                return "nightly/cu124"
+
             return "cu124"
         elif os_name == "Darwin":
             raise NotImplementedError(

@@ -116,6 +116,13 @@ def test_nvidia_gpu_mac(monkeypatch):
         get_torch_platform(gpu_infos)
 
 
+def test_nvidia_5xxx_gpu_windows(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Windows")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "amd64")
+    gpu_infos = [GPU(NVIDIA, "NVIDIA", "2c02", "GB203 [GeForce RTX 5080]", True)]
+    assert get_torch_platform(gpu_infos) == "nightly/cu124"
+
+
 def test_intel_gpu_windows(monkeypatch):
     monkeypatch.setattr("torchruntime.platform_detection.os_name", "Windows")
     monkeypatch.setattr("torchruntime.platform_detection.arch", "amd64")
@@ -130,6 +137,13 @@ def test_intel_gpu_linux(monkeypatch):
     gpu_infos = [GPU(INTEL, "Intel", 0x1234, "Iris", True)]
     expected = "ipex" if py_version < (3, 9) else "xpu"
     assert get_torch_platform(gpu_infos) == expected
+
+
+def test_nvidia_5xxx_gpu_linux(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
+    gpu_infos = [GPU(NVIDIA, "NVIDIA", "2c02", "GB203 [GeForce RTX 5080]", True)]
+    assert get_torch_platform(gpu_infos) == "nightly/cu124"
 
 
 def test_intel_gpu_mac(monkeypatch):

@@ -23,6 +23,13 @@ def test_cuda_platform():
     assert result == [packages + ["--index-url", expected_url]]
 
 
+def test_cuda_nightly_platform():
+    packages = ["torch", "torchvision"]
+    result = get_install_commands("nightly/cu112", packages)
+    expected_url = "https://download.pytorch.org/whl/nightly/cu112"
+    assert result == [packages + ["--index-url", expected_url]]
+
+
 def test_rocm_platform():
     packages = ["torch", "torchvision"]
     result = get_install_commands("rocm4.2", packages)
