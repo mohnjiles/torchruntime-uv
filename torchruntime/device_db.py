@@ -36,6 +36,7 @@ GPU_DEVICES = {  # if the value is a regex, it'll be applied to the device_name.
             "1681": ("Rembrandt", "gfx1035", "10.3.5"),
             "164e": ("Raphael", "gfx1036", "10.3.6"),
             "1506": ("Mendocino", "gfx1037", "10.3.7"),
+            "13c0": ("Granite Ridge", "gfx1030", "10.3.0"),
             "164f": ("Phoenix", "gfx1103", "11.0.1"),
             "15bf": ("Phoenix1", "gfx1103", "11.0.3"),
             "15c8": ("Phoenix2", "gfx1103", "11.0.3"),
