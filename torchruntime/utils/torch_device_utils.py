@@ -10,7 +10,7 @@ MTIA = "mtia"
 
 SUPPORTED_BACKENDS = (CPU, CUDA, XPU, MPS, DIRECTML, MTIA)
 
-if sys.version_info < (3, 9):
+if sys.version_info < (3, 10):
     # polyfill for callable static methods
     class CallableStaticMethod(staticmethod):
         def __call__(self, *args, **kwargs):
