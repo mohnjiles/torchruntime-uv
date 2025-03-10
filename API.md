@@ -24,7 +24,7 @@ discrete_gpus = get_gpus()  # Returns a list of `torchruntime.device_db.GPU` ins
 **Important:** This API could break in the future, so if you're writing a program using this, please open a new Issue on this repo and let me know what you're trying to do.
 
 ## Get torch platform
-This will provide you the recommended torch platform to use for the PC. It analyzes the GPUs and OS on the PC, and suggests the most-performant version of torch for that.
+This will return the recommended torch platform to use for the PC. It will analyze the GPUs and OS on the PC, and suggest the most-performant version of torch for that.
 
 E.g. `cu124` or `rocm6.1` or `directml` or `ipex` or `xpu` or `cpu`.
 
