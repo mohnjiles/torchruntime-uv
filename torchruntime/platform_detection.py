@@ -111,7 +111,7 @@ def _get_platform_for_discrete(gpu_infos):
         if os_name in ("Windows", "Linux"):
             device_names = set(gpu.device_name for gpu in gpu_infos)
             if any(BLACKWELL_DEVICES.search(device_name) for device_name in device_names):
-                return "nightly/cu124"
+                return "nightly/cu128"
 
             return "cu124"
         elif os_name == "Darwin":
