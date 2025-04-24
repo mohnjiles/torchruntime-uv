@@ -18,7 +18,7 @@ You can use the device database built into `torchruntime` for your projects:
 ```py
 from torchruntime.device_db import get_gpus
 
-discrete_gpus = get_gpus()  # Returns a list of `torchruntime.device_db.GPU` instances containing the fields: vendor_id, vendor_name, device_id, device_name, is_discrete
+gpus = get_gpus()  # Returns a list of `torchruntime.device_db.GPU` instances containing the fields: vendor_id, vendor_name, device_id, device_name, is_discrete
 ```
 
 **Important:** This API could break in the future, so if you're writing a program using this, please open a new Issue on this repo and let me know what you're trying to do.
@@ -31,5 +31,5 @@ E.g. `cu124` or `rocm6.1` or `directml` or `ipex` or `xpu` or `cpu`.
 ```py
 from torchruntime.platform_detection import get_torch_platform
 
-torch_platform = get_torch_platform()
+torch_platform = get_torch_platform(gpus)  # use `torchruntime.device_db.get_gpus()` to get a list of recognized GPUs
 ```
