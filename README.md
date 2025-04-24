@@ -73,11 +73,13 @@ The list of platforms on which `torchruntime` can install a working variant of P
 
 | Series  | Supported? | OS | Notes  |
 |---|---|---|---|
-| 50xx  | ✅ Yes  | Win/Linux  | Uses CUDA 124 Nightly  |
-| 40xx  | ✅ Yes  | Win/Linux  | Uses CUDA 124  |
-| 30xx  | ✅ Yes  | Win/Linux  | Uses CUDA 124  |
-| 20xx  | ✅ Yes  | Win/Linux  | Uses CUDA 124  |
-| 10xx/16xx  | ✅ Yes  | Win/Linux  | Uses CUDA 124. Full-precision required on 16xx series  |
+| 50xx  | ✅ Yes  | Win/Linux  | Uses CUDA 12.8  |
+| 40xx  | ✅ Yes  | Win/Linux  | Uses CUDA 12.8  |
+| 30xx  | ✅ Yes  | Win/Linux  | Uses CUDA 12.8  |
+| 20xx  | ✅ Yes  | Win/Linux  | Uses CUDA 12.8  |
+| 10xx/16xx  | ✅ Yes  | Win/Linux  | Uses CUDA 12.8. Full-precision required on 16xx series  |
+
+**Note:** We use CUDA 12.4 for Python 3.8, since torch dropped support for Python 3.8 after torch 2.4.
 
 ### AMD
 
