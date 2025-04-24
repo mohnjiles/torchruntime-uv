@@ -94,18 +94,26 @@ def test_amd_gpu_mac(monkeypatch):
     assert get_torch_platform(gpu_infos) == "mps"
 
 
-def test_nvidia_gpu_windows(monkeypatch):
+def test_nvidia_gpu_windows(monkeypatch, capsys):
     monkeypatch.setattr("torchruntime.platform_detection.os_name", "Windows")
     monkeypatch.setattr("torchruntime.platform_detection.arch", "amd64")
     gpu_infos = [GPU(NVIDIA, "NVIDIA", 0x1234, "GeForce", True)]
-    assert get_torch_platform(gpu_infos) == "cu124"
+    expected = "cu124" if py_version < (3, 9) else "cu128"
+    assert get_torch_platform(gpu_infos) == expected
+    if py_version < (3, 9):
+        captured = capsys.readouterr()
+        assert "Support for Python 3.8 was dropped in torch 2.5" in captured.out
 
 
-def test_nvidia_gpu_linux(monkeypatch):
+def test_nvidia_gpu_linux(monkeypatch, capsys):
     monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
     monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
     gpu_infos = [GPU(NVIDIA, "NVIDIA", 0x1234, "GeForce", True)]
-    assert get_torch_platform(gpu_infos) == "cu124"
+    expected = "cu124" if py_version < (3, 9) else "cu128"
+    assert get_torch_platform(gpu_infos) == expected
+    if py_version < (3, 9):
+        captured = capsys.readouterr()
+        assert "Support for Python 3.8 was dropped in torch 2.5" in captured.out
 
 
 def test_nvidia_gpu_mac(monkeypatch):
@@ -120,7 +128,11 @@ def test_nvidia_5xxx_gpu_windows(monkeypatch):
     monkeypatch.setattr("torchruntime.platform_detection.os_name", "Windows")
     monkeypatch.setattr("torchruntime.platform_detection.arch", "amd64")
     gpu_infos = [GPU(NVIDIA, "NVIDIA", "2c02", "GB203 [GeForce RTX 5080]", True)]
-    assert get_torch_platform(gpu_infos) == "nightly/cu128"
+    if py_version < (3, 9):
+        with pytest.raises(NotImplementedError):
+            get_torch_platform(gpu_infos)
+    else:
+        assert get_torch_platform(gpu_infos) == "cu128"
 
 
 def test_intel_gpu_windows(monkeypatch):
@@ -143,7 +155,11 @@ def test_nvidia_5xxx_gpu_linux(monkeypatch):
     monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
     monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
     gpu_infos = [GPU(NVIDIA, "NVIDIA", "2c02", "GB203 [GeForce RTX 5080]", True)]
-    assert get_torch_platform(gpu_infos) == "nightly/cu128"
+    if py_version < (3, 9):
+        with pytest.raises(NotImplementedError):
+            get_torch_platform(gpu_infos)
+    else:
+        assert get_torch_platform(gpu_infos) == "cu128"
 
 
 def test_intel_gpu_mac(monkeypatch):
@@ -161,7 +177,8 @@ def test_multiple_gpu_vendors_with_NVIDIA(monkeypatch):
         GPU(AMD, "AMD", 0x1234, "Radeon", True),
         GPU(NVIDIA, "NVIDIA", 0x5678, "GeForce", True),
     ]
-    assert get_torch_platform(gpu_infos) == "cu124"
+    expected = "cu124" if py_version < (3, 9) else "cu128"
+    assert get_torch_platform(gpu_infos) == expected
 
 
 def test_multiple_gpu_vendors_without_NVIDIA(monkeypatch):
@@ -182,7 +199,8 @@ def test_multiple_gpu_NVIDIA(monkeypatch):
         GPU(NVIDIA, "NVIDIA", "2504", "GA106 [GeForce RTX 3060 Lite Hash Rate]", True),
         GPU(NVIDIA, "NVIDIA", "1c02", "GP106 [GeForce GTX 1060 3GB]", True),
     ]
-    assert get_torch_platform(gpu_infos) == "cu124"
+    expected = "cu124" if py_version < (3, 9) else "cu128"
+    assert get_torch_platform(gpu_infos) == expected
 
 
 def test_multiple_gpu_AMD_Navi3_Navi2(monkeypatch, capsys):
@@ -365,7 +383,8 @@ def test_mixed_nvidia_discrete_amd_integrated_linux(monkeypatch):
         GPU(AMD, "AMD", "164f", "Phoenix", False),  # integrated
         GPU(NVIDIA, "NVIDIA", "2504", "RTX 3060", True),  # discrete
     ]
-    assert get_torch_platform(gpu_infos) == "cu124"
+    expected = "cu124" if py_version < (3, 9) else "cu128"
+    assert get_torch_platform(gpu_infos) == expected
 
 
 def test_mixed_nvidia_discrete_intel_integrated_windows(monkeypatch):
@@ -375,7 +394,8 @@ def test_mixed_nvidia_discrete_intel_integrated_windows(monkeypatch):
         GPU(INTEL, "Intel", "0x56c1", "UHD Graphics", False),  # integrated
         GPU(NVIDIA, "NVIDIA", "2504", "RTX 3060", True),  # discrete
     ]
-    assert get_torch_platform(gpu_infos) == "cu124"
+    expected = "cu124" if py_version < (3, 9) else "cu128"
+    assert get_torch_platform(gpu_infos) == expected
 
 
 def test_mixed_amd_discrete_intel_integrated_linux(monkeypatch, capsys):
@@ -400,4 +420,5 @@ def test_mixed_multiple_discrete_and_integrated(monkeypatch):
         GPU(NVIDIA, "NVIDIA", "2504", "RTX 3060", True),  # discrete NVIDIA
         GPU(AMD, "AMD", "73f0", "Navi 33", True),  # discrete AMD
     ]
-    assert get_torch_platform(gpu_infos) == "cu124"
+    expected = "cu124" if py_version < (3, 9) else "cu128"
+    assert get_torch_platform(gpu_infos) == expected

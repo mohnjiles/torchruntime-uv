@@ -109,11 +109,19 @@ def _get_platform_for_discrete(gpu_infos):
             return "mps"
     elif vendor_id == NVIDIA:
         if os_name in ("Windows", "Linux"):
-            device_names = set(gpu.device_name for gpu in gpu_infos)
-            if any(BLACKWELL_DEVICES.search(device_name) for device_name in device_names):
-                return "nightly/cu128"
+            if py_version < (3, 9):
+                device_names = set(gpu.device_name for gpu in gpu_infos)
+                if any(BLACKWELL_DEVICES.search(device_name) for device_name in device_names):
+                    raise NotImplementedError(
+                        f"Torch does not support NVIDIA 50xx series of GPUs on Python 3.8. Please switch to a newer Python version to use the latest version of torch!"
+                    )
 
-            return "cu124"
+                print(
+                    "[WARNING] Support for Python 3.8 was dropped in torch 2.5. torchruntime will default to using torch 2.4 instead, but consider switching to a newer Python version to use the latest version of torch!"
+                )
+                return "cu124"
+
+            return "cu128"
         elif os_name == "Darwin":
             raise NotImplementedError(
                 f"torchruntime does not currently support NVIDIA graphics cards on Macs! Please contact torchruntime at {CONTACT_LINK}"
