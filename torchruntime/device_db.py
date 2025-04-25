@@ -109,12 +109,13 @@ def get_gpu_type(vendor_id, device_id, device_name):
 
 
 def get_windows_output():
-    env = dict(os.environ)
-    env["PATH"] += ";C:\\Windows\\System32\\WindowsPowerShell\\v1.0"
-
     try:
-        command = ["powershell", "-Command", "Get-WmiObject Win32_VideoController | ForEach-Object { $_.PNPDeviceID }"]
-        return subprocess.check_output(command, text=True, stderr=subprocess.DEVNULL, env=env)
+        command = [
+            "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "-Command",
+            "Get-WmiObject Win32_VideoController | ForEach-Object { $_.PNPDeviceID }",
+        ]
+        return subprocess.check_output(command, text=True, stderr=subprocess.DEVNULL)
     except subprocess.CalledProcessError:
         return ""
 
