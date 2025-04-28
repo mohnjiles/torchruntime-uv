@@ -9,7 +9,26 @@ os_name = platform.system()
 arch = platform.machine().lower()
 py_version = sys.version_info
 
-BLACKWELL_DEVICES = re.compile(r"\b(?:5060|5070|5080|5090)\b")
+# https://www.techpowerup.com/gpu-specs/?architecture=Kepler&sort=generation and so on (change the arch field)
+KEPLER_DEVICES = re.compile(r"\b(gk1\d{2}\w*)\b", re.IGNORECASE)  # sm3.7
+MAXWELL_DEVICES = re.compile(r"\b(gm10\d\w*)\b", re.IGNORECASE)  # sm5
+PASCAL_DEVICES = re.compile(r"\b(gp10\d\w*)\b", re.IGNORECASE)  # sm6
+VOLTA_DEVICES = re.compile(r"\b(gv100\w*)\b", re.IGNORECASE)  # sm7
+TURING_DEVICES = re.compile(r"\b(tu1\d{2}\w*)\b", re.IGNORECASE)  # sm7.5
+AMPERE_DEVICES = re.compile(r"\b(ga10\d\w*)\b", re.IGNORECASE)  # sm8.6
+ADA_LOVELACE_DEVICES = re.compile(r"\b(ad10\d\w*)\b", re.IGNORECASE)  # sm8.9
+BLACKWELL_DEVICES = re.compile(r"\b(?:5060|5070|5080|5090)\b", re.IGNORECASE)  # sm10, sm12
+
+NVIDIA_ARCH_MAP = {
+    BLACKWELL_DEVICES: 12,
+    ADA_LOVELACE_DEVICES: 8.9,
+    AMPERE_DEVICES: 8.6,
+    TURING_DEVICES: 7.5,
+    VOLTA_DEVICES: 7,
+    PASCAL_DEVICES: 6,
+    MAXWELL_DEVICES: 5,
+    KEPLER_DEVICES: 3.7,
+}
 
 
 def get_torch_platform(gpu_infos):
@@ -109,16 +128,17 @@ def _get_platform_for_discrete(gpu_infos):
             return "mps"
     elif vendor_id == NVIDIA:
         if os_name in ("Windows", "Linux"):
-            if py_version < (3, 9):
-                device_names = set(gpu.device_name for gpu in gpu_infos)
-                if any(BLACKWELL_DEVICES.search(device_name) for device_name in device_names):
-                    raise NotImplementedError(
-                        f"Torch does not support NVIDIA 50xx series of GPUs on Python 3.8. Please switch to a newer Python version to use the latest version of torch!"
-                    )
-
-                print(
-                    "[WARNING] Support for Python 3.8 was dropped in torch 2.5. torchruntime will default to using torch 2.4 instead, but consider switching to a newer Python version to use the latest version of torch!"
+            device_names = set(gpu.device_name for gpu in gpu_infos)
+            arch_version = get_nvidia_arch(device_names)
+            if py_version < (3, 9) and arch_version == 12:
+                raise NotImplementedError(
+                    f"Torch does not support NVIDIA 50xx series of GPUs on Python 3.8. Please switch to a newer Python version to use the latest version of torch!"
                 )
+
+            # https://github.com/pytorch/pytorch/blob/0b6ea0b959f65d53ea8a34c1fa1c46446dfe3603/.ci/manywheel/build_cuda.sh#L54
+            if arch_version == 3.7:
+                return "cu118"
+            if (arch_version > 3.7 and arch_version < 7.5) or py_version < (3, 9):
                 return "cu124"
 
             return "cu128"
@@ -149,6 +169,14 @@ def _get_platform_for_discrete(gpu_infos):
     print(f"Unrecognized vendor: {gpu_infos}")
 
     return "cpu"
+
+
+def get_nvidia_arch(device_names):
+    for arch_regex, arch in NVIDIA_ARCH_MAP.items():
+        if any(arch_regex.search(device_name) for device_name in device_names):
+            return arch
+
+    return 0
 
 
 def _get_platform_for_integrated(gpu_infos):

@@ -94,26 +94,20 @@ def test_amd_gpu_mac(monkeypatch):
     assert get_torch_platform(gpu_infos) == "mps"
 
 
-def test_nvidia_gpu_windows(monkeypatch, capsys):
+def test_nvidia_gpu_windows(monkeypatch):
     monkeypatch.setattr("torchruntime.platform_detection.os_name", "Windows")
     monkeypatch.setattr("torchruntime.platform_detection.arch", "amd64")
     gpu_infos = [GPU(NVIDIA, "NVIDIA", 0x1234, "GeForce", True)]
     expected = "cu124" if py_version < (3, 9) else "cu128"
     assert get_torch_platform(gpu_infos) == expected
-    if py_version < (3, 9):
-        captured = capsys.readouterr()
-        assert "Support for Python 3.8 was dropped in torch 2.5" in captured.out
 
 
-def test_nvidia_gpu_linux(monkeypatch, capsys):
+def test_nvidia_gpu_linux(monkeypatch):
     monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
     monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
     gpu_infos = [GPU(NVIDIA, "NVIDIA", 0x1234, "GeForce", True)]
     expected = "cu124" if py_version < (3, 9) else "cu128"
     assert get_torch_platform(gpu_infos) == expected
-    if py_version < (3, 9):
-        captured = capsys.readouterr()
-        assert "Support for Python 3.8 was dropped in torch 2.5" in captured.out
 
 
 def test_nvidia_gpu_mac(monkeypatch):
@@ -122,6 +116,52 @@ def test_nvidia_gpu_mac(monkeypatch):
     gpu_infos = [GPU(NVIDIA, "NVIDIA", 0x1234, "GeForce", True)]
     with pytest.raises(NotImplementedError):
         get_torch_platform(gpu_infos)
+
+
+def test_nvidia_7xx_gpu_windows(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Windows")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "amd64")
+    gpu_infos = [GPU(NVIDIA, "NVIDIA", "1004", "GK110 [GeForce GTX 780]", True)]
+    assert get_torch_platform(gpu_infos) == "cu118"
+
+
+def test_nvidia_10xx_gpu_windows(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Windows")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "amd64")
+    gpu_infos = [GPU(NVIDIA, "NVIDIA", "1c02", "GP106 [GeForce GTX 1060 3GB]", True)]
+    assert get_torch_platform(gpu_infos) == "cu124"
+
+
+def test_nvidia_16xx_gpu_windows(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Windows")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "amd64")
+    gpu_infos = [GPU(NVIDIA, "NVIDIA", "21c4", "TU116 [GeForce GTX 1660 SUPER]", True)]
+    expected = "cu124" if py_version < (3, 9) else "cu128"
+    assert get_torch_platform(gpu_infos) == expected
+
+
+def test_nvidia_20xx_gpu_windows(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Windows")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "amd64")
+    gpu_infos = [GPU(NVIDIA, "NVIDIA", "1f11", "TU106M [GeForce RTX 2060 Mobile]", True)]
+    expected = "cu124" if py_version < (3, 9) else "cu128"
+    assert get_torch_platform(gpu_infos) == expected
+
+
+def test_nvidia_30xx_gpu_windows(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Windows")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "amd64")
+    gpu_infos = [GPU(NVIDIA, "NVIDIA", "2489", "GA104 [GeForce RTX 3060 Ti Lite Hash Rate]", True)]
+    expected = "cu124" if py_version < (3, 9) else "cu128"
+    assert get_torch_platform(gpu_infos) == expected
+
+
+def test_nvidia_40xx_gpu_windows(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Windows")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "amd64")
+    gpu_infos = [GPU(NVIDIA, "NVIDIA", "2705", "AD103 [GeForce RTX 4070 Ti SUPER]", True)]
+    expected = "cu124" if py_version < (3, 9) else "cu128"
+    assert get_torch_platform(gpu_infos) == expected
 
 
 def test_nvidia_5xxx_gpu_windows(monkeypatch):
