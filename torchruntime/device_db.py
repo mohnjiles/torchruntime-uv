@@ -55,7 +55,10 @@ GPU_DEVICES = {  # if the value is a regex, it'll be applied to the device_name.
         "exclude": re.compile(r"\b(?:audio|bridge)\b", re.IGNORECASE),
     },
     NVIDIA: {
-        "discrete": re.compile(r"\b(?:geforce|riva|quadro|tesla|ion|grid|rtx|tu\d{2,}.+t\d{2,})\b", re.IGNORECASE),
+        "discrete": re.compile(
+            r"\b(?:geforce|riva|quadro|tesla|ion|grid|rtx|tu\d{2,}.+t\d{2,}|gk1\d{2}\w*|gm10\d\w*|gp10\d\w*|gv100\w*|tu1\d{2}\w*|ga10\d\w*|ad10\d\w*)\b",
+            re.IGNORECASE,
+        ),
         "exclude": re.compile(
             r"\b(?:audio|switch|pci|memory|smbus|ide|co-processor|bridge|usb|sata|controller)\b", re.IGNORECASE
         ),
