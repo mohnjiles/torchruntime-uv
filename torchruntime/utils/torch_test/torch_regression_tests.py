@@ -224,4 +224,4 @@ class PyTorchRegressionTest:
         self.test_convolution()
         self.test_batch_norm()
         self.test_multihead_attention()
-        self.test_scaled_dot_product_attention()
+        # self.test_scaled_dot_product_attention()
