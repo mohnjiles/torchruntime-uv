@@ -98,6 +98,12 @@ def _get_platform_for_discrete(gpu_infos):
             return "directml"
         elif os_name == "Linux":
             device_names = set(gpu.device_name for gpu in gpu_infos)
+            if any(device_name.startswith("Navi 4") for device_name in device_names):
+                if py_version < (3, 9):
+                    raise NotImplementedError(
+                        f"Torch does not support Navi 4x series of GPUs on Python 3.8. Please switch to a newer Python version to use the latest version of torch!"
+                    )
+                return "nightly/rocm6.4"
             if any(device_name.startswith("Navi") for device_name in device_names) and any(
                 device_name.startswith("Vega 2") for device_name in device_names
             ):  # lowest-common denominator is rocm5.7, which works with both Navi and Vega 20

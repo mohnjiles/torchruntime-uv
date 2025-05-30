@@ -22,7 +22,7 @@ class GPU:
 
 GPU_DEVICES = {  # if the value is a regex, it'll be applied to the device_name. if the value is a dict, the pci_id will be looked up
     AMD: {
-        "discrete": re.compile(r"\b(?:radeon|instinct|fire|rage|polaris|aldebaran)\b", re.IGNORECASE),
+        "discrete": re.compile(r"\b(?:radeon|instinct|fire|rage|polaris|aldebaran|navi)\b", re.IGNORECASE),
         "integrated": {  # pci_id -> (device_name, gfx_name, hsa_override)
             "15dd": ("Raven Ridge", "gfx902", "9.1.0"),
             "15d8": ("Picasso", "gfx903", "9.1.0"),
@@ -47,7 +47,7 @@ GPU_DEVICES = {  # if the value is a regex, it'll be applied to the device_name.
             "1586": ("Strix Halo", "gfx1151", "11.5.1"),
             "1114": ("Krackan", "gfx1151", "11.5.1"),
         },
-        "exclude": re.compile(r"\b(?:audio|bridge|arden|oberon|stoney|wani)\b", re.IGNORECASE),
+        "exclude": re.compile(r"\b(?:audio|bridge|arden|oberon|stoney|wani|usb|switch)\b", re.IGNORECASE),
     },
     INTEL: {
         "discrete": re.compile(r"\b(?:arc)\b", re.IGNORECASE),

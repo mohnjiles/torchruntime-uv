@@ -28,6 +28,17 @@ def test_amd_gpu_windows(monkeypatch):
     assert get_torch_platform(gpu_infos) == "directml"
 
 
+def test_amd_gpu_navi4_linux(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
+    gpu_infos = [GPU(AMD, "AMD", 0x1234, "Navi 41", True)]
+    if py_version < (3, 9):
+        with pytest.raises(NotImplementedError):
+            get_torch_platform(gpu_infos)
+    else:
+        assert get_torch_platform(gpu_infos) == "nightly/rocm6.4"
+
+
 def test_amd_gpu_navi3_linux(monkeypatch, capsys):
     monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
     monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
