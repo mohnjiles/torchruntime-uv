@@ -39,6 +39,16 @@ def clean_env():
             os.environ[var] = original_values[var]
 
 
+def test_rocm_navi_4_settings():
+    gpus = [create_gpu_info(AMD, "123", "Navi 44 XTX", True)]
+    configure(gpus, "nightly/rocm6.4")
+
+    assert os.environ.get("HSA_OVERRIDE_GFX_VERSION") == "12.0.0"
+    assert os.environ.get("HIP_VISIBLE_DEVICES") == "0"
+    assert "ROC_ENABLE_PRE_VEGA" not in os.environ
+    assert "PYTORCH_ENABLE_MPS_FALLBACK" not in os.environ
+
+
 def test_rocm_navi_3_settings():
     gpus = [create_gpu_info(AMD, "123", "Navi 31 XTX", True)]
     configure(gpus, "rocm6.2")
