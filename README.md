@@ -55,6 +55,13 @@ Supported torch packages: `torch`, `torchvision`, `torchaudio`, `torchao`.
 
 So in general, it's better to avoid specifying a version unless it really matters to you (or you know what you're doing). Instead, please allow `torchruntime` to pick the latest-possible version for the user.
 
+## Versioning pattern
+The version pattern for `torchruntime` will be `major.minor.patch`, e.g. `1.20.3`.
+
+The `patch` version will be changed for automatic PCI database updates, e.g. support for new graphics cards. The `minor` version will be changed for non-breaking code changes, e.g. routine maintenance, refactoring or bug fixes. The `major` version will be changed for breaking code changes, e.g. API changes.
+
+It is recommended that you rely on the minor version, for e.g. use `torchruntime ~= 1` in `requirements.txt` (change this to the current major version), which will install versions like `1.21.0`, `1.22.2` etc but not `2.0.0`.
+
 # Compatibility table
 The list of platforms on which `torchruntime` can install a working variant of PyTorch.
 
