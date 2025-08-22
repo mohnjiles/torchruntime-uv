@@ -96,6 +96,7 @@ The list of platforms on which `torchruntime` can install a working variant of P
 
 | Series  | Supported? | OS   | Notes  |
 |---|---|---|---|
+| 9xxx  | ✅ Yes  | Win/Linux    | Navi4/RDNA4 (gfx120x). ROCm 6.4 on Linux. DirectML on Windows  |
 | 7xxx  | ✅ Yes  | Win/Linux    | Navi3/RDNA3 (gfx110x). ROCm 6.2 on Linux. DirectML on Windows  |
 | 6xxx  | ✅ Yes  | Win/Linux    | Navi2/RDNA2 (gfx103x). ROCm 6.2 on Linux. DirectML on Windows  |
 | 6xxx on Intel Mac  | ✅ Yes  | Intel Mac  | gfx103x. 'mps' backend |
