@@ -10,13 +10,13 @@ arch = platform.machine().lower()
 py_version = sys.version_info
 
 # https://www.techpowerup.com/gpu-specs/?architecture=Kepler&sort=generation and so on (change the arch field)
-KEPLER_DEVICES = re.compile(r"\b(gk1\d{2}\w*)\b", re.IGNORECASE)  # sm3.7
-MAXWELL_DEVICES = re.compile(r"\b(gm10\d\w*)\b", re.IGNORECASE)  # sm5
-PASCAL_DEVICES = re.compile(r"\b(gp10\d\w*)\b", re.IGNORECASE)  # sm6
-VOLTA_DEVICES = re.compile(r"\b(gv100\w*)\b", re.IGNORECASE)  # sm7
-TURING_DEVICES = re.compile(r"\b(tu1\d{2}\w*)\b", re.IGNORECASE)  # sm7.5
-AMPERE_DEVICES = re.compile(r"\b(ga10\d\w*)\b", re.IGNORECASE)  # sm8.6
-ADA_LOVELACE_DEVICES = re.compile(r"\b(ad10\d\w*)\b", re.IGNORECASE)  # sm8.9
+KEPLER_DEVICES = re.compile(r"\b(gk\d+\w*)\b", re.IGNORECASE)  # sm3.7
+MAXWELL_DEVICES = re.compile(r"\b(gm\d+\w*)\b", re.IGNORECASE)  # sm5
+PASCAL_DEVICES = re.compile(r"\b(gp\d+\w*)\b", re.IGNORECASE)  # sm6
+VOLTA_DEVICES = re.compile(r"\b(gv\d+\w*)\b", re.IGNORECASE)  # sm7
+TURING_DEVICES = re.compile(r"\b(tu\d+\w*)\b", re.IGNORECASE)  # sm7.5
+AMPERE_DEVICES = re.compile(r"\b(ga\d+\w*)\b", re.IGNORECASE)  # sm8.6
+ADA_LOVELACE_DEVICES = re.compile(r"\b(ad\d+\w*)\b", re.IGNORECASE)  # sm8.9
 BLACKWELL_DEVICES = re.compile(r"\b(?:5060|5070|5080|5090)\b", re.IGNORECASE)  # sm10, sm12
 
 NVIDIA_ARCH_MAP = {

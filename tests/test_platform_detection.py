@@ -254,6 +254,17 @@ def test_multiple_gpu_NVIDIA(monkeypatch):
     assert get_torch_platform(gpu_infos) == expected
 
 
+def test_multiple_gpu_NVIDIA_maxwell(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
+    gpu_infos = [
+        GPU(NVIDIA, "NVIDIA", "17fd", "GM200GL [Tesla M40]", True),
+        GPU(NVIDIA, "NVIDIA", "1401", "GM206 [GeForce GTX 960]", True),
+    ]
+    expected = "cu124"
+    assert get_torch_platform(gpu_infos) == expected
+
+
 def test_multiple_gpu_AMD_Navi3_Navi2(monkeypatch, capsys):
     monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
     monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
