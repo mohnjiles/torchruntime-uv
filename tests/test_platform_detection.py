@@ -36,7 +36,7 @@ def test_amd_gpu_navi4_linux(monkeypatch):
         with pytest.raises(NotImplementedError):
             get_torch_platform(gpu_infos)
     else:
-        assert get_torch_platform(gpu_infos) == "nightly/rocm6.4"
+        assert get_torch_platform(gpu_infos) == "rocm6.4"
 
 
 def test_amd_gpu_navi3_linux(monkeypatch, capsys):
