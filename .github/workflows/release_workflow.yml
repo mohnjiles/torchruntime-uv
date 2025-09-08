@@ -76,9 +76,7 @@ jobs:
       uses: actions/download-artifact@v5
       with:
         name: build
-        path: |
-          dist
-          pyproject.toml
+        path: .
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
