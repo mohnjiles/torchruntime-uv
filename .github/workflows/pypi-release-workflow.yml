@@ -99,16 +99,11 @@ jobs:
           echo "Versions differ. Proceeding with publish."
           echo "publish=true" >> $GITHUB_OUTPUT
         fi
-    - name: Dummy
-      run: |
-        echo "Ready to deploy to PyPI"
-        ls
-        find .
-    # - name: Publish to PyPI
-    #   if: steps.check-version.outputs.publish == 'true'
-    #   uses: pypa/gh-action-pypi-publish@release/v1
-    #   with:
-    #     verbose: true
+    - name: Publish to PyPI
+      if: steps.check-version.outputs.publish == 'true'
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        verbose: true
     permissions:
       contents: read
       id-token: write
