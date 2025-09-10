@@ -69,7 +69,7 @@ jobs:
         pip show torchruntime
         python -m torchruntime --help  # test invocation
         pytest --pyargs torchruntime  # run tests
-  deploy_to_pypi:
+  deploy_to_pypi_on_release_created:
     runs-on: ubuntu-latest
     permissions:
       contents: read
