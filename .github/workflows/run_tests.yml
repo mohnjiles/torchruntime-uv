@@ -1,14 +1,14 @@
 # Generated initially using github-actions-wizard (https://github.com/cmdr2/github-actions-wizard)
 
-name: Run Tests
-run-name: Run Tests
+name: CI Tests
+run-name: CI Tests
 on:
   push:
     branches:
-      - main
+    - main
   pull_request:
     branches:
-      - main
+    - main
   workflow_dispatch:
 jobs:
   test:
@@ -17,21 +17,20 @@ jobs:
       matrix:
         python-version: ["3.8", "3.11"]
       fail-fast: false
+    permissions:
+      contents: read
     steps:
-    - name: Checkout
+    - name: Checkout code
       uses: actions/checkout@v4
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Setup Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-
     - name: Install dependencies
-      run: |
+      run: |-
         python -m pip install --upgrade pip
         pip install pytest
-
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Run tests
-      run: |
+      run: |-
         python -m pytest
-    permissions:
-      contents: read
