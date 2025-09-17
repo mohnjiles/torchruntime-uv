@@ -11,8 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    with:
-      token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -149,3 +147,4 @@ jobs:
             Automatic update of PCI database. Install using `pip install --upgrade torchruntime==${{ steps.update_version.outputs.new_version }}`
 
             ${{ env.DIFF_OUTPUT }}
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
