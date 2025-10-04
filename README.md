@@ -91,6 +91,8 @@ The list of platforms on which `torchruntime` can install a working variant of P
 | 10xx  | ✅ Yes  | Win/Linux  | Uses CUDA 12.4  |
 | 7xx  | ✅ Yes  | Win/Linux  | Uses CUDA 11.8 |
 
+Datacenter: Supports all 2xx and 1xx series GPUs after Kepler (e.g. H200, B200, H100 etc).
+
 **Note:** Torch dropped support for Python 3.8 from torch >= 2.5. torchruntime falls back to CUDA 12.4, if python 3.8 is being used.
 
 ### AMD
