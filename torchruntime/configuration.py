@@ -1,7 +1,8 @@
 import os
 
 from .consts import AMD
-from .device_db import get_gpus, GPU_DEVICES
+from .device_db import get_gpus
+from .gpu_db import get_amd_gfx_info
 from .platform_detection import get_torch_platform, os_name
 
 
@@ -110,9 +111,7 @@ def _set_rocm_vars_for_integrated(gpu_infos):
     gpu = gpu_infos[0]
     env = {}
 
-    integrated_amd_gpus = GPU_DEVICES[AMD]["integrated"]
-
-    family_name, gfx_id, hsa_version = integrated_amd_gpus.get(gpu.device_id, ("", "", ""))
+    family_name, gfx_id, hsa_version = get_amd_gfx_info(gpu.device_id)
     env["HSA_OVERRIDE_GFX_VERSION"] = hsa_version
 
     if gfx_id.startswith("gfx8"):
