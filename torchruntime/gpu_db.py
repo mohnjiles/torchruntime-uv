@@ -106,11 +106,11 @@ def get_amd_gfx_info(device_id):
 # GPU Device Type Identification
 # =============================================================================
 
-# Build NVIDIA discrete pattern by combining brand names with architecture patterns
-_NVIDIA_BRANDS = r"geforce|riva|quadro|tesla|ion|grid|rtx|gtx|titan"
+# Build NVIDIA discrete pattern from architecture patterns (Kepler and newer only)
+# This covers GPUs from 2012 onwards with compute capability 3.7+
 _NVIDIA_ARCH_PATTERNS = r"|".join(pattern.pattern.strip(r"\b()").strip(r"(?:)") for pattern in NVIDIA_ARCH_MAP.keys())
 NVIDIA_DISCRETE_PATTERN = re.compile(
-    rf"\b(?:{_NVIDIA_BRANDS}|{_NVIDIA_ARCH_PATTERNS})\b",
+    rf"\b(?:{_NVIDIA_ARCH_PATTERNS})\b",
     re.IGNORECASE,
 )
 

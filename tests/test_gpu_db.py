@@ -94,9 +94,11 @@ class TestGPUTypeDetection:
     """Test GPU type detection (discrete, integrated, none)."""
 
     def test_nvidia_discrete_by_brand(self):
-        assert get_gpu_type(NVIDIA, "1234", "NVIDIA GeForce RTX 4080") == "DISCRETE"
-        assert get_gpu_type(NVIDIA, "1234", "NVIDIA Quadro P1000") == "DISCRETE"
-        assert get_gpu_type(NVIDIA, "1234", "NVIDIA Tesla V100") == "DISCRETE"
+        # Note: In real PCI IDs database, GPU names include architecture codes
+        # Testing with realistic device names that include arch codes
+        assert get_gpu_type(NVIDIA, "2704", "AD103 [GeForce RTX 4080]") == "DISCRETE"
+        assert get_gpu_type(NVIDIA, "1cb1", "GP107GL [Quadro P1000]") == "DISCRETE"
+        assert get_gpu_type(NVIDIA, "1db4", "GV100GL [Tesla V100]") == "DISCRETE"
 
     def test_nvidia_discrete_by_arch_code(self):
         assert get_gpu_type(NVIDIA, "1234", "NVIDIA GP104") == "DISCRETE"
@@ -151,23 +153,23 @@ class TestPatternConstruction:
     """Test that patterns are correctly built without duplication."""
 
     def test_nvidia_discrete_pattern_includes_all_architectures(self):
-        """Verify NVIDIA_DISCRETE_PATTERN includes all architecture codes."""
+        """Verify NVIDIA_DISCRETE_PATTERN includes all architecture codes (Kepler+)."""
         from torchruntime.gpu_db import NVIDIA_DISCRETE_PATTERN
 
-        # Test that all architecture patterns are included
+        # Test that all architecture patterns are included (Kepler and newer)
         arch_codes = ["gk104", "gm107", "gp104", "gv100", "tu116", "ga102", "gh100", "ad102", "gb100"]
         for code in arch_codes:
             assert NVIDIA_DISCRETE_PATTERN.search(code), f"Pattern should match {code}"
-
-        # Test brand names
-        brands = ["GeForce", "Quadro", "Tesla", "RTX", "GTX", "Titan"]
-        for brand in brands:
-            assert NVIDIA_DISCRETE_PATTERN.search(brand), f"Pattern should match {brand}"
 
         # Test Blackwell model numbers
         models = ["5060", "5070", "5080", "5090"]
         for model in models:
             assert NVIDIA_DISCRETE_PATTERN.search(model), f"Pattern should match {model}"
+
+        # Brand names alone (without arch codes) are NOT supported for Kepler+ only detection
+        # Pre-Kepler GPUs like "GeForce 8800 GTX" (G80) should NOT match
+        assert not NVIDIA_DISCRETE_PATTERN.search("GeForce 8800 GTX")
+        assert not NVIDIA_DISCRETE_PATTERN.search("GeForce GTX 580")  # GF110, pre-Kepler
 
     def test_amd_discrete_pattern_separate(self):
         """Verify AMD has a separate discrete pattern."""
