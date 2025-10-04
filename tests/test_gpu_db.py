@@ -42,7 +42,7 @@ class TestNvidiaArchDetection:
         assert get_nvidia_arch(device_names) == 8.6
 
     def test_hopper_detection(self):
-        device_names = ["NVIDIA GH100", "H100 PCIe"]
+        device_names = ["NVIDIA GH100", "H100 PCIe", "H200 SXM 141GB"]
         assert get_nvidia_arch(device_names) == 9.0
 
     def test_ada_lovelace_detection(self):
