@@ -9,7 +9,7 @@ from .platform_detection import get_torch_platform
 
 os_name = platform.system()
 
-PIP_PREFIX = ["uv", "pip", "install"]
+PIP_PREFIX = [sys.executable, "-m", "pip", "install"]
 CUDA_REGEX = re.compile(r"^(nightly/)?cu\d+$")
 ROCM_REGEX = re.compile(r"^(nightly/)?rocm\d+\.\d+$")
 
@@ -76,7 +76,7 @@ def get_install_commands(torch_platform, packages):
     raise ValueError(f"Unsupported platform: {torch_platform}")
 
 
-def get_pip_commands(cmds, use_uv=True):
+def get_pip_commands(cmds, use_uv=False):
     assert not any(cmd is None for cmd in cmds)
     if use_uv:
         pip_prefix = ["uv", "pip", "install"]
@@ -91,10 +91,10 @@ def run_commands(cmds):
         subprocess.run(cmd)
 
 
-def install(packages=[], use_uv=True):
+def install(packages=[], use_uv=False):
     """
     packages: a list of strings with package names (and optionally their versions in pip-format). e.g. ["torch", "torchvision"] or ["torch>=2.0", "torchaudio==0.16.0"]. Defaults to ["torch", "torchvision", "torchaudio"].
-    use_uv: bool, whether to use uv for installation. Defaults to True.
+    use_uv: bool, whether to use uv for installation. Defaults to False.
     """
 
     gpu_infos = get_gpus()
