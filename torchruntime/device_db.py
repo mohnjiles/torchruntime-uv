@@ -7,6 +7,7 @@ import subprocess
 from dataclasses import dataclass
 
 from .consts import NVIDIA, AMD, INTEL
+from .gpu_db import is_gpu_vendor, get_gpu_type
 
 DEVICE_DB_FILE = "gpu_pci_ids.db"  # this file will only include AMD, NVIDIA and Discrete Intel GPUs
 
@@ -20,95 +21,7 @@ class GPU:
     is_discrete: bool
 
 
-GPU_DEVICES = {  # if the value is a regex, it'll be applied to the device_name. if the value is a dict, the pci_id will be looked up
-    AMD: {
-        "discrete": re.compile(r"\b(?:radeon|instinct|fire|rage|polaris|aldebaran)\b", re.IGNORECASE),
-        "integrated": {  # pci_id -> (device_name, gfx_name, hsa_override)
-            "15dd": ("Raven Ridge", "gfx902", "9.1.0"),
-            "15d8": ("Picasso", "gfx903", "9.1.0"),
-            # gfx90c - https://github.com/ROCm/clr/commit/fbbae8055fbad748254bec1675a6970ce1dce594
-            "1636": ("Renoir", "gfx90c", "9.0.12"),
-            "164c": ("Lucienne", "gfx90c", "9.0.12"),
-            "1638": ("Cezanne", "gfx90c", "9.0.12"),
-            "15e7": ("Barcelo", "gfx90c", "9.0.12"),
-            "163f": ("VanGogh", "gfx1033", "10.3.3"),
-            "164d": ("Rembrandt", "gfx1035", "10.3.5"),
-            "1681": ("Rembrandt", "gfx1035", "10.3.5"),
-            "164e": ("Raphael", "gfx1036", "10.3.6"),
-            "1506": ("Mendocino", "gfx1037", "10.3.7"),
-            "13c0": ("Granite Ridge", "gfx1030", "10.3.0"),
-            "164f": ("Phoenix", "gfx1103", "11.0.1"),
-            "15bf": ("Phoenix1", "gfx1103", "11.0.3"),
-            "15c8": ("Phoenix2", "gfx1103", "11.0.3"),
-            "1900": ("Phoenix3", "gfx1103", "11.0.4"),
-            "1901": ("Phoenix4", "gfx1103", "11.0.4"),
-            # gfx1150 - https://github.com/ROCm/clr/commit/4bc515aa62368c6189d19e14b3ec18cb6dd4415e
-            "150e": ("Strix", "gfx1150", "11.5.0"),
-            "1586": ("Strix Halo", "gfx1151", "11.5.1"),
-            "1114": ("Krackan", "gfx1151", "11.5.1"),
-        },
-        "exclude": re.compile(r"\b(?:audio|bridge|arden|oberon|stoney|wani)\b", re.IGNORECASE),
-    },
-    INTEL: {
-        "discrete": re.compile(r"\b(?:arc)\b", re.IGNORECASE),
-        "integrated": re.compile(r"\b(?:iris|hd graphics|uhd graphics)\b", re.IGNORECASE),
-        "exclude": re.compile(r"\b(?:audio|bridge)\b", re.IGNORECASE),
-    },
-    NVIDIA: {
-        "discrete": re.compile(
-            r"\b(?:geforce|riva|quadro|tesla|ion|grid|rtx|tu\d{2,}.+t\d{2,}|gk1\d{2}\w*|gm10\d\w*|gp10\d\w*|gv100\w*|tu1\d{2}\w*|ga10\d\w*|ad10\d\w*)\b",
-            re.IGNORECASE,
-        ),
-        "exclude": re.compile(
-            r"\b(?:audio|switch|pci|memory|smbus|ide|co-processor|bridge|usb|sata|controller)\b", re.IGNORECASE
-        ),
-    },
-}
-
-
 os_name = platform.system()
-
-
-def is_gpu_vendor(vendor_id):
-    return vendor_id in GPU_DEVICES
-
-
-def get_gpu_type(vendor_id, device_id, device_name):
-    """
-    Returns the GPU type of the given PCI device.
-
-    Args:
-        vendor_id (str): PCI Vendor ID.
-        device_id (str): PCI Device ID.
-        device_name (str): PCI Device Name.
-
-    Returns:
-        gpu_type (str): "DISCRETE", "INTEGRATED", or "NONE"
-    """
-
-    def matches(pattern):
-        if isinstance(pattern, re.Pattern):
-            return pattern.search(device_name)
-        if isinstance(pattern, dict):
-            return device_id in pattern
-        return False
-
-    vendor_devices = GPU_DEVICES[vendor_id]
-
-    discrete_devices = vendor_devices.get("discrete")
-    integrated_devices = vendor_devices.get("integrated")
-    exclude_devices = vendor_devices.get("exclude")
-
-    if matches(exclude_devices):
-        return "NONE"
-
-    if matches(integrated_devices):  # check integrated first, to avoid matching "Radeon" and classifying it as discrete
-        return "INTEGRATED"
-
-    if matches(discrete_devices):
-        return "DISCRETE"
-
-    return "NONE"
 
 
 def get_windows_output():

@@ -63,6 +63,16 @@ Supported torch packages: `torch`, `torchvision`, `torchaudio`, `torchao`.
 
 So in general, it's better to avoid specifying a version unless it really matters to you (or you know what you're doing). Instead, please allow `torchruntime` to pick the latest-possible version for the user.
 
+## Versioning scheme
+`torchruntime` uses [semantic versioning](https://semver.org/). Versions will follow the `major.minor.patch` pattern, e.g. `1.20.3`.
+
+- `major` version change: for breaking code changes, e.g. API changes. E.g. `1.0` to `2.0`.
+- `minor` version change: for automatic PCI database updates, e.g. support for new graphics cards. E.g. `1.1` to `1.2`.
+- `minor` version change: for non-breaking code changes, e.g. backwards-compatible new functionality, routine maintenance, refactoring. E.g. `1.1` to `1.2`.
+- `patch` version change: for backward compatible bug fixes. E.g. `1.1.1` to `1.1.2`.
+
+It is recommended that you rely on the minor version, for e.g. use `torchruntime ~= 1` in `requirements.txt` (change this to the current major version), which will install versions like `1.21.0`, `1.22.2` etc but not `2.0.0`.
+
 # Compatibility table
 The list of platforms on which `torchruntime` can install a working variant of PyTorch.
 
@@ -89,6 +99,8 @@ The list of platforms on which `torchruntime` can install a working variant of P
 | 10xx  | ✅ Yes  | Win/Linux  | Uses CUDA 12.4  |
 | 7xx  | ✅ Yes  | Win/Linux  | Uses CUDA 11.8 |
 
+Datacenter: Supports all 2xx and 1xx series GPUs after Kepler (e.g. H200, B200, H100 etc).
+
 **Note:** Torch dropped support for Python 3.8 from torch >= 2.5. torchruntime falls back to CUDA 12.4, if python 3.8 is being used.
 
 ### AMD
@@ -97,6 +109,7 @@ The list of platforms on which `torchruntime` can install a working variant of P
 
 | Series  | Supported? | OS   | Notes  |
 |---|---|---|---|
+| 9xxx  | ✅ Yes  | Win/Linux    | Navi4/RDNA4 (gfx120x). ROCm 6.4 on Linux. DirectML on Windows  |
 | 7xxx  | ✅ Yes  | Win/Linux    | Navi3/RDNA3 (gfx110x). ROCm 6.2 on Linux. DirectML on Windows  |
 | 6xxx  | ✅ Yes  | Win/Linux    | Navi2/RDNA2 (gfx103x). ROCm 6.2 on Linux. DirectML on Windows  |
 | 6xxx on Intel Mac  | ✅ Yes  | Intel Mac  | gfx103x. 'mps' backend |

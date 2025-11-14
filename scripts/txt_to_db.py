@@ -76,7 +76,7 @@ if __name__ == "__main__":
     # Check if input and output arguments are provided
     if len(sys.argv) != 3:
         print("Usage: python script.py <input_file> <output_db>")
-        print("Get the text file at https://github.com/pciutils/pciids/blob/master/pci.ids")
+        print("Get the text file at https://github.com/pciutils/pciids/raw/refs/heads/master/pci.ids")
         sys.exit(1)
 
     input_file = sys.argv[1]

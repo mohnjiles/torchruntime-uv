@@ -28,6 +28,17 @@ def test_amd_gpu_windows(monkeypatch):
     assert get_torch_platform(gpu_infos) == "directml"
 
 
+def test_amd_gpu_navi4_linux(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
+    gpu_infos = [GPU(AMD, "AMD", 0x1234, "Navi 41", True)]
+    if py_version < (3, 9):
+        with pytest.raises(NotImplementedError):
+            get_torch_platform(gpu_infos)
+    else:
+        assert get_torch_platform(gpu_infos) == "rocm6.4"
+
+
 def test_amd_gpu_navi3_linux(monkeypatch, capsys):
     monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
     monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
@@ -240,6 +251,17 @@ def test_multiple_gpu_NVIDIA(monkeypatch):
         GPU(NVIDIA, "NVIDIA", "1c02", "GP106 [GeForce GTX 1060 3GB]", True),
     ]
     expected = "cu124" if py_version < (3, 9) else "cu128"
+    assert get_torch_platform(gpu_infos) == expected
+
+
+def test_multiple_gpu_NVIDIA_maxwell(monkeypatch):
+    monkeypatch.setattr("torchruntime.platform_detection.os_name", "Linux")
+    monkeypatch.setattr("torchruntime.platform_detection.arch", "x86_64")
+    gpu_infos = [
+        GPU(NVIDIA, "NVIDIA", "17fd", "GM200GL [Tesla M40]", True),
+        GPU(NVIDIA, "NVIDIA", "1401", "GM206 [GeForce GTX 960]", True),
+    ]
+    expected = "cu124"
     assert get_torch_platform(gpu_infos) == expected
 
 

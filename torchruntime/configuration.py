@@ -1,7 +1,8 @@
 import os
 
 from .consts import AMD
-from .device_db import get_gpus, GPU_DEVICES
+from .device_db import get_gpus
+from .gpu_db import get_amd_gfx_info
 from .platform_detection import get_torch_platform, os_name
 
 
@@ -13,7 +14,7 @@ def configure():
 
 
 def _configure_internal(gpu_infos, torch_platform):
-    if torch_platform.startswith("rocm"):
+    if "rocm" in torch_platform:
         check_rocm_permissions()
         set_rocm_env_vars(gpu_infos, torch_platform)
     elif os_name == "Darwin":
@@ -62,6 +63,7 @@ def _set_rocm_vars_for_discrete(gpu_infos, all_gpu_info):
     # past settings from: https://github.com/easydiffusion/easydiffusion/blob/20d77a85a1ed766ece0cc4b6a55dca003bce262c/scripts/check_modules.py#L405-L420
 
     # Determine GPU generations present
+    has_navi4 = any("Navi 4" in device_name for device_name in device_names)  # RX 9000 series
     has_navi3 = any("Navi 3" in device_name for device_name in device_names)  # RX 7000 series
     has_navi2 = any("Navi 2" in device_name for device_name in device_names)  # RX 6000 series
     has_navi1 = any("Navi 1" in device_name for device_name in device_names)  # RX 5000 series
@@ -70,7 +72,11 @@ def _set_rocm_vars_for_discrete(gpu_infos, all_gpu_info):
     has_ellesmere = any("Ellesmere" in device_name for device_name in device_names)  # RX 570/580/Polaris etc
 
     # Select GPU generation settings based on priority
-    if has_navi3:
+    if has_navi4:
+        env["HSA_OVERRIDE_GFX_VERSION"] = "12.0.0"
+        # Find the index of the first Navi 4 GPU
+        env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(all_gpu_info, "Navi 4")
+    elif has_navi3:
         env["HSA_OVERRIDE_GFX_VERSION"] = "11.0.0"
         # Find the index of the first Navi 3 GPU
         env["HIP_VISIBLE_DEVICES"] = _visible_device_ids(all_gpu_info, "Navi 3")
@@ -105,9 +111,7 @@ def _set_rocm_vars_for_integrated(gpu_infos):
     gpu = gpu_infos[0]
     env = {}
 
-    integrated_amd_gpus = GPU_DEVICES[AMD]["integrated"]
-
-    family_name, gfx_id, hsa_version = integrated_amd_gpus.get(gpu.device_id, ("", "", ""))
+    family_name, gfx_id, hsa_version = get_amd_gfx_info(gpu.device_id)
     env["HSA_OVERRIDE_GFX_VERSION"] = hsa_version
 
     if gfx_id.startswith("gfx8"):

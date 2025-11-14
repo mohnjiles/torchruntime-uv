@@ -3,13 +3,13 @@ requires = [ "setuptools",]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "torchruntime-uv"
-version = "1.0.0"
-description = "A fork of easydiffusion/torchruntime that uses uv by default instead of pip"
+name = "torchruntime"
+version = "1.25.0"
+description = "Meant for app developers. A convenient way to install and configure the appropriate version of PyTorch on the user's computer, based on the OS and GPU manufacturer and model number."
 readme = "README.md"
 requires-python = ">=3.0"
 classifiers = [ "Programming Language :: Python :: 3", "License :: OSI Approved :: MIT License", "Operating System :: Microsoft :: Windows :: Windows 10", "Operating System :: Microsoft :: Windows :: Windows 11", "Operating System :: POSIX :: Linux", "Operating System :: MacOS",]
-keywords = [ "torch", "ai", "ml", "llm", "installer", "runtime", "uv",]
+keywords = [ "torch", "ai", "ml", "llm", "installer", "runtime",]
 dynamic = [ "dependencies",]
 [[project.authors]]
 name = "cmdr2"
@@ -19,8 +19,8 @@ email = "secondary.cmdr2@gmail.com"
 torchruntime = "torchruntime.__main__:main"
 
 [project.urls]
-Homepage = "https://github.com/mohnjiles/torchruntime-uv"
-"Bug Tracker" = "https://github.com/mohnjiles/torchruntime-uv/issues"
+Homepage = "https://github.com/easydiffusion/torchruntime"
+"Bug Tracker" = "https://github.com/easydiffusion/torchruntime/issues"
 
 [tool.isort]
 profile = "black"
